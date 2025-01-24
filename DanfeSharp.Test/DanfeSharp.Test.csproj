@@ -14,4 +14,13 @@
   <ItemGroup>
     <ProjectReference Include="..\DanfeSharp\DanfeSharp.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Xml\**\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Logos\**\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
