@@ -23,7 +23,7 @@ var modelo = new DanfeViewModel()
     Emitente = new EmpresaViewModel()
     {
         CnpjCpf = "123456...",
-        Nome = "DanfeSharp Ltda",    
+        Nome = "DanfeSharp Ltda",
 	...
 
 
@@ -36,3 +36,10 @@ using (var danfe = new Danfe(modelo))
 ```
 
 
+# Linux
+
+Para executar no linux instalar os pacotes:
+
+```sh
+apt-get update && apt-get install -y libgdiplus
+```
