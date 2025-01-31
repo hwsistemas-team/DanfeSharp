@@ -1,4 +1,4 @@
-using DanfeSharp.Esquemas.NFe;
+﻿using DanfeSharp.Esquemas.NFe;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,6 +45,7 @@ namespace DanfeSharp.Modelo
         }
 
         public bool NFCeItensEm2Linhas { get; set; } = false;
+        public bool NFCeExibirItens { get; set; } = true;
 
         public float PaginaAltura { get; set; }
         public float PaginaLargura { get; set; }

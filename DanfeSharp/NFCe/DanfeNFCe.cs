@@ -63,7 +63,8 @@ namespace DanfeSharp.NFCe
 
             BlocoEmitenteLogo = AdicionarBloco<BlocoEmitente>();
             AdicionarBloco<BlocoDanfeInfo>();
-            AdicionarBloco<BlocoProdutos>();
+            if (ViewModel.NFCeExibirItens)
+                AdicionarBloco<BlocoProdutos>();
             AdicionarBloco<BlocoTotais>();
             AdicionarBloco<BlocoPagamentos>();
             AdicionarBloco<BlocoEmissao>();
