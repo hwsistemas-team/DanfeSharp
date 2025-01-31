@@ -13,29 +13,63 @@ namespace DanfeSharp.NFCe
             var ac = AlinhamentoHorizontal.Centro;
             var ad = AlinhamentoHorizontal.Direita;
 
-            var tbl = new Tabela2(Estilo)
+            if (viewModel.NFCeItensEm2Linhas)
+            {
+                var tbl = new Tabela2(Estilo)
+                    .ComColuna(15, ae, "Código")
+                    .ComColuna(85, ae, "Descrição")
+                    .NovaGrupoColunas()
+                    .ComColuna(15, ae, "")
+                    .ComColuna(28, ac, "Qtd Un x")
+                    .ComColuna(28, ac, "Vl Unit =")
+                    .ComColuna(29, ad, "Vl Total");
+
+                foreach(var item in viewModel.Produtos)
+                {
+                    tbl.AdicionarLinha(new List<List<string>>
+                    {
+                        new List<string>
+                        {
+                            item.Codigo,
+                            item.Descricao
+                        },
+                        new List<string>
+                        {
+                            null,
+                            item.Quantidade.Formatar(),
+                            item.ValorUnitario.Formatar(),
+                            item.ValorTotal.Formatar()
+                        }
+                    });
+                }
+
+                tbl.AjustarAltura();
+                MainVerticalStack.Add(tbl);
+            }
+            else
+            {
+                var tbl = new Tabela2(Estilo)
                 .ComColuna(10, ae, "Código")
                 .ComColuna(30, ae, "Descrição")
                 .ComColuna(20, ac, "Qtd Un x")
                 .ComColuna(20, ac, "Vl Unit =")
                 .ComColuna(20, ad, "Vl Total");
 
-            tbl.AjustarLarguraColunas();
-
-            foreach(var item in viewModel.Produtos)
-            {
-                tbl.AdicionarLinha(new List<string>
+                foreach(var item in viewModel.Produtos)
                 {
-                    item.Codigo,
-                    item.Descricao,
-                    item.Quantidade.Formatar(),
-                    item.ValorUnitario.Formatar(),
-                    item.ValorTotal.Formatar()
-                });
-            }
+                    tbl.AdicionarLinha(new List<string>
+                    {
+                        item.Codigo,
+                        item.Descricao,
+                        item.Quantidade.Formatar(),
+                        item.ValorUnitario.Formatar(),
+                        item.ValorTotal.Formatar()
+                    });
+                }
 
-            tbl.AjustarAltura();
-            MainVerticalStack.Add(tbl);
+                tbl.AjustarAltura();
+                MainVerticalStack.Add(tbl);
+            }
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

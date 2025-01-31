@@ -1,4 +1,4 @@
-﻿using DanfeSharp.Esquemas.NFe;
+using DanfeSharp.Esquemas.NFe;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,6 +43,8 @@ namespace DanfeSharp.Modelo
                     throw new ArgumentOutOfRangeException("A margem deve ser entre 2 e 5.");
             }
         }
+
+        public bool NFCeItensEm2Linhas { get; set; } = false;
 
         public float PaginaAltura { get; set; }
         public float PaginaLargura { get; set; }
