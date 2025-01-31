@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DanfeSharp
 {
-    internal class Tabela : ElementoBase
+    internal class Tabela2 : ElementoBase
     {
         public List<TabelaColuna> Colunas { get; private set; }
         public List<List<String>> Linhas { get; private set; }
@@ -26,7 +24,7 @@ namespace DanfeSharp
         public Fonte FonteCorpo { get; private set; }
         public Fonte FonteCabecalho { get; private set; }
 
-        public Tabela(Estilo estilo) : base(estilo)
+        public Tabela2(Estilo estilo) : base(estilo)
         {
             Colunas = new List<TabelaColuna>();
             Linhas = new List<List<string>>();
@@ -39,12 +37,11 @@ namespace DanfeSharp
 
             // 7.7.7 Conteúdo dos Campos do Quadro “Dados dos Produtos/Serviços”
             // Deverá ter tamanho mínimo de seis(6) pontos, ou 17 CPP.
-
             FonteCorpo = estilo.CriarFonteRegular(6F);
-            FonteCabecalho = estilo.CriarFonteRegular(6F);
+            FonteCabecalho = estilo.CriarFonteNegrito(6F);
         }
 
-        public Tabela ComColuna(float larguraP, AlinhamentoHorizontal ah, params String[] cabecalho)
+        public Tabela2 ComColuna(float larguraP, AlinhamentoHorizontal ah, params String[] cabecalho)
         {
             Colunas.Add(new TabelaColuna(cabecalho, larguraP, ah));
             return this;
@@ -69,6 +66,25 @@ namespace DanfeSharp
 
         }
 
+        public void AjustarAltura()
+        {
+            var fixHeight = 1; // Margem de erro no calculo das linhas para impedir que não imprima a linha devido a uma pequena diferença na altura
+            Height = CalcularAlturarCabacalho() + (Linhas.Count * CalcularAlturarLinha()) + fixHeight;
+        }
+
+        private float CalcularAlturarCabacalho()
+        {
+            var ml = Colunas.Max(c => c.Cabecalho.Length);
+            var cabecalhoAltura = ml * FonteCabecalho.AlturaLinha + 2F;
+            return cabecalhoAltura;
+        }
+
+        private float CalcularAlturarLinha()
+        {
+            var linhaAltura = FonteCorpo.AlturaLinha + PaddingSuperior + PaddingInferior;
+            return linhaAltura;
+        }
+
         private Boolean DesenharLinha(Gfx gfx)
         {
             float x = X;
@@ -85,10 +101,12 @@ namespace DanfeSharp
 
                 if (!String.IsNullOrWhiteSpace(v))
                 {
+                    var width =  w - 2F * Estilo.PaddingHorizontal;
+                    v = TextOverflow.TratarTexto(v, FonteCorpo, width, addElipses: false);
 
                     tb[i] = new TextBlock(v, FonteCorpo)
                     {
-                        Width = w - 2F * Estilo.PaddingHorizontal,
+                        Width = width,
                         X = x + PaddingHorizontal,
                         Y = _DY + PaddingSuperior,
                         AlinhamentoHorizontal = c.AlinhamentoHorizontal
@@ -96,19 +114,19 @@ namespace DanfeSharp
                 }
 
                 x += w;
-
             }
 
             var tbm = tb.Where(t => t != null).Max(t => t.Height);
-            if (tbm + _DY + PaddingInferior + PaddingSuperior > BoundingBox.Bottom) return false;
+            if (tbm + _DY + PaddingInferior + PaddingSuperior > BoundingBox.Bottom)
+                return false;
 
             for (int i = 0; i < Colunas.Count; i++)
             {
-                if(tb[i] != null)
+                if (tb[i] != null)
                     tb[i].Draw(gfx);
             }
 
-             _DY += Math.Max(tbm, FonteCorpo.AlturaLinha) + PaddingSuperior + PaddingInferior;
+            _DY += Math.Max(tbm, FonteCorpo.AlturaLinha) + PaddingSuperior + PaddingInferior;
 
             return true;
         }
@@ -121,6 +139,12 @@ namespace DanfeSharp
             float x = X;
             _DY = Y;
 
+            gfx.PrimitiveComposer.BeginLocalState();
+            gfx.PrimitiveComposer.SetFillColor(new DeviceRGBColor(245 / 255d, 245 / 255d, 245 / 255d));
+            gfx.DrawRectangle(X, Y, Width, ac);
+            gfx.PrimitiveComposer.FillStroke();
+            gfx.PrimitiveComposer.End();
+
             foreach (var coluna in Colunas)
             {
                 float w = (Width * coluna.PorcentagemLargura) / 100F;
@@ -128,7 +152,7 @@ namespace DanfeSharp
 
                 var tb = new TextStack(r.InflatedRetangle(1F));
                 tb.AlinhamentoVertical = AlinhamentoVertical.Centro;
-                tb.AlinhamentoHorizontal = AlinhamentoHorizontal.Centro;
+                tb.AlinhamentoHorizontal = coluna.AlinhamentoHorizontal;
 
                 foreach (var item in coluna.Cabecalho)
                 {
@@ -138,25 +162,18 @@ namespace DanfeSharp
                 tb.Draw(gfx);
 
                 x += w;
-
-                gfx.DrawRectangle(r);
-                gfx.DrawRectangle(r.X, BoundingBox.Y, r.Width, BoundingBox.Height);
             }
 
             _DY += ac;
-
-            gfx.Stroke();
         }
 
 
         public override void Draw(Gfx gfx)
         {
-
             base.Draw(gfx);
             gfx.SetLineWidth(0.25F);
 
             DesenharCabecalho(gfx);
-
 
             while (LinhaAtual < Linhas.Count)
             {
@@ -177,13 +194,9 @@ namespace DanfeSharp
                     LinhaAtual++;
                 }
                 else
-                {
                     break;
-                }
             }
         }
-
-
 
         public override bool PossuiContono => false;
     }

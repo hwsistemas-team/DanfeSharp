@@ -7,5 +7,8 @@ namespace DanfeSharp
         public override void Draw(Gfx gfx)
         {
         }
+
+        public static ElementoVazio T3() => new ElementoVazio { Height = 3 };
+        public static ElementoVazio T0() => new ElementoVazio { Height = 0.8f };
     }
 }

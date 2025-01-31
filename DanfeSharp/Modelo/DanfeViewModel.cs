@@ -44,6 +44,9 @@ namespace DanfeSharp.Modelo
             }
         }
 
+        public float PaginaAltura { get; set; }
+        public float PaginaLargura { get; set; }
+
         /// <summary>
         /// <para>Número do Documento Fiscal</para>
         /// <para>Tag nNF</para>
@@ -62,7 +65,7 @@ namespace DanfeSharp.Modelo
         /// Chave de Acesso
         /// </summary>
         public String ChaveAcesso { get; set; }
-                    
+
 
         /// <summary>
         /// <para>Descrição da Natureza da Operação</para>
@@ -109,13 +112,13 @@ namespace DanfeSharp.Modelo
         /// Dados do Destinatário
         /// </summary>
         public EmpresaViewModel Destinatario { get; set; }
-        
+
         /// <summary>
         /// <para>Tipo de Operação - 0-entrada / 1-saída</para>
         /// <para>Tag tpNF</para>
         /// </summary>
         public int TipoNF { get; set; }
-        
+
         /// <summary>
         /// Tipo de emissão
         /// </summary>
@@ -129,7 +132,11 @@ namespace DanfeSharp.Modelo
         /// <summary>
         /// Faturas da Nota Fiscal
         /// </summary>
-        public List<DuplicataViewModel> Duplicatas { get; set; }        
+        public List<DuplicataViewModel> Duplicatas { get; set; }
+
+        public Double TrocoPagamento { get; set; }
+
+        public List<PagamentoViewModel> Pagamentos { get; set; }
 
         /// <summary>
         /// Dados da Transportadora
@@ -171,6 +178,10 @@ namespace DanfeSharp.Modelo
         /// </summary>
         public List<String> NotasFiscaisReferenciadas { get; set; }
 
+        public string QrCode { get; set; }
+
+        public string UrlChave { get; set; }
+
         #region Local Retirada e Entrega
 
         public LocalEntregaRetiradaViewModel LocalRetirada { get; set; }
@@ -198,7 +209,6 @@ namespace DanfeSharp.Modelo
 
         #endregion
 
-
         #region Opções de exibição
 
         /// <summary>
@@ -221,7 +231,7 @@ namespace DanfeSharp.Modelo
         /// </summary>
         public bool ExibirBlocoLocalRetirada { get; set; } = true;
 
-        
+
         /// <summary>
         /// Exibe o Nome Fantasia, caso disponível, ao invés da Razão Social no quadro identificação do emitente.
         /// </summary>
@@ -247,24 +257,25 @@ namespace DanfeSharp.Modelo
             Emitente = new EmpresaViewModel();
             Destinatario = new EmpresaViewModel();
             Duplicatas = new List<DuplicataViewModel>();
+            Pagamentos = new List<PagamentoViewModel>();
             Produtos = new List<ProdutoViewModel>();
             Transportadora = new TransportadoraViewModel();
             CalculoIssqn = new CalculoIssqnViewModel();
             NotasFiscaisReferenciadas = new List<string>();
         }
 
-        
+
         public Boolean MostrarCalculoIssqn { get; set; }
-    
-                
+
+
         /// <summary>
         /// Substitui o ponto e vírgula (;) por uma quebra de linha.
         /// </summary>
         private String BreakLines(String str)
         {
             return str == null ? String.Empty : str.Replace(';', '\n');
-        }   
-       
+        }
+
         public static DanfeViewModel CreateFromXmlFile(String path)
         {
             return DanfeViewModelCreator.CriarDeArquivoXml(path);
@@ -317,7 +328,7 @@ namespace DanfeSharp.Modelo
         public virtual String TextoAdicional()
         {
             StringBuilder sb = new StringBuilder();
-           
+
             if (!String.IsNullOrEmpty(InformacoesComplementares))
                 sb.AppendChaveValor("Inf. Contribuinte", InformacoesComplementares).Replace(";", "\r\n");
 
@@ -330,7 +341,7 @@ namespace DanfeSharp.Modelo
 
             if (!String.IsNullOrEmpty(InformacoesAdicionaisFisco))
                 sb.AppendChaveValor("Inf. fisco", InformacoesAdicionaisFisco);
-            
+
             if (!String.IsNullOrEmpty(Pedido) && !Utils.StringContemChaveValor(InformacoesComplementares, "Pedido", Pedido))
                 sb.AppendChaveValor("Pedido", Pedido);
 

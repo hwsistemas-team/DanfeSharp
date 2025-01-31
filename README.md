@@ -42,4 +42,5 @@ Para executar no linux instalar os pacotes:
 
 ```sh
 apt-get update && apt-get install -y libgdiplus
+dotnet add package SkiaSharp.NativeAssets.Linux
 ```

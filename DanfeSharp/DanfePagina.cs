@@ -25,18 +25,18 @@ namespace DanfeSharp
             Danfe = danfe ?? throw new ArgumentNullException(nameof(danfe));
             PdfPage = new Page(Danfe.PdfDocument);
             Danfe.PdfDocument.Pages.Add(PdfPage);
-         
+
             PrimitiveComposer = new PrimitiveComposer(PdfPage);
             Gfx = new Gfx(PrimitiveComposer);
 
-            if (Danfe.ViewModel.Orientacao == Orientacao.Retrato)            
-                Retangulo = new RectangleF(0, 0, Constantes.A4Largura, Constantes.A4Altura);            
-            else            
+            if (Danfe.ViewModel.Orientacao == Orientacao.Retrato)
+                Retangulo = new RectangleF(0, 0, Constantes.A4Largura, Constantes.A4Altura);
+            else
                 Retangulo = new RectangleF(0, 0, Constantes.A4Altura, Constantes.A4Largura);
-            
+
             RetanguloDesenhavel = Retangulo.InflatedRetangle(Danfe.ViewModel.Margem);
             RetanguloCreditos = new RectangleF(RetanguloDesenhavel.X, RetanguloDesenhavel.Bottom + Danfe.EstiloPadrao.PaddingSuperior, RetanguloDesenhavel.Width, Retangulo.Height - RetanguloDesenhavel.Height - Danfe.EstiloPadrao.PaddingSuperior);
-            PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());    
+            PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());
         }
 
         public void DesenharCreditos()
@@ -52,7 +52,7 @@ namespace DanfeSharp
             canhoto.SetPosition(RetanguloDesenhavel.Location);
 
             if (Danfe.ViewModel.Orientacao == Orientacao.Retrato)
-            {           
+            {
                 canhoto.Width = RetanguloDesenhavel.Width;
 
                 for (int i = 0; i < Danfe.ViewModel.QuantidadeCanhotos; i++)
@@ -73,7 +73,7 @@ namespace DanfeSharp
                 {
                     canhoto.Draw(Gfx);
                     canhoto.Y += canhoto.Height;
-                }              
+                }
 
                 Gfx.PrimitiveComposer.End();
                 RetanguloDesenhavel = RetanguloDesenhavel.CutLeft(canhoto.Height * Danfe.ViewModel.QuantidadeCanhotos);

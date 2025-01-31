@@ -5,14 +5,14 @@ using org.pdfclown.documents.contents.composition;
 
 namespace DanfeSharp.Graphics
 {
-    internal class Gfx 
+    internal class Gfx
     {
         public PrimitiveComposer PrimitiveComposer { get; private set; }
 
         public Gfx(PrimitiveComposer primitiveComposer)
         {
-            PrimitiveComposer = primitiveComposer ?? throw new ArgumentNullException(nameof(primitiveComposer));          
-        }            
+            PrimitiveComposer = primitiveComposer ?? throw new ArgumentNullException(nameof(primitiveComposer));
+        }
 
         internal void DrawString(string str, RectangleF rect, Fonte fonte, AlinhamentoHorizontal ah = AlinhamentoHorizontal.Esquerda, AlinhamentoVertical av = AlinhamentoVertical.Topo)
         {
@@ -64,7 +64,7 @@ namespace DanfeSharp.Graphics
                 if(xs.Height >= xs.Width)
                 {
                     s.Height = r.Height;
-                    s.Width = (s.Height * xs.Width) / xs.Height; 
+                    s.Width = (s.Height * xs.Width) / xs.Height;
                 }
                 else
                 {

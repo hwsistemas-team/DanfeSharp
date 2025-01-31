@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -82,6 +83,7 @@ namespace DanfeSharp.Esquemas.NFe
     public class NFe
     {
         public InfNFe infNFe { get; set; }
+        public InfNFeSupl infNFeSupl { get; set; }
     }
 
 
@@ -110,7 +112,7 @@ namespace DanfeSharp.Esquemas.NFe
         public string xBairro { get; set; }
 
         /// <summary>
-        /// Código do município 
+        /// Código do município
         /// </summary>
         public string cMun { get; set; }
 
@@ -220,7 +222,7 @@ namespace DanfeSharp.Esquemas.NFe
         public string uTrib { get; set; }
         public string qTrib { get; set; }
         public string vUnTrib { get; set; }
-        public string vFrete { get; set; }        
+        public string vFrete { get; set; }
         public string vSeg { get; set; }
         public string vDesc { get; set; }
         public string vOutro { get; set; }
@@ -259,7 +261,7 @@ namespace DanfeSharp.Esquemas.NFe
     public class ImpostoICMSSN500 : ImpostoICMS { }
     public class ImpostoICMSSN900 : ImpostoICMS { }
     public class ImpostoICMSST : ImpostoICMS { }
-    
+
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
     public partial class ProdutoICMS
@@ -329,14 +331,14 @@ namespace DanfeSharp.Esquemas.NFe
     [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
     public class Detalhe
     {
-        public Produto prod { get; set; }      
+        public Produto prod { get; set; }
         public ProdutoImposto imposto { get; set; }
         public string infAdProd { get; set; }
 
         [XmlAttribute]
         public string nItem { get; set; }
     }
-    
+
 
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
@@ -373,6 +375,116 @@ namespace DanfeSharp.Esquemas.NFe
         {
             dup = new List<Duplicata>();
         }
+    }
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
+    public partial class Pagamento
+    {
+        public float vTroco { get; set; }
+
+        [XmlElement("detPag")]
+        public List<PagamentoDetalhe> detPag { get; set; }
+
+        public Pagamento()
+        {
+            detPag = new List<PagamentoDetalhe>();
+        }
+    }
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
+    public partial class PagamentoDetalhe
+    {
+        public IndicadorPagamento indPag { get; set; }
+        public FormaPagamento tPag { get; set; }
+        public float vPag { get; set; }
+    }
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
+    public enum IndicadorPagamento
+    {
+        [Description("Pagamento à vista")]
+        [XmlEnum("0")]
+        ipDetPgVista = 0,
+
+        [Description("Pagamento à prazo")]
+        [XmlEnum("1")]
+        ipDetPgPrazo = 1
+    }
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
+    public enum FormaPagamento
+    {
+        [Description("Dinheiro")]
+        [XmlEnum("01")]
+        fpDinheiro = 1,
+
+        [Description("Cheque")]
+        [XmlEnum("02")]
+        fpCheque = 2,
+
+        [Description("Cartão de Crédito")]
+        [XmlEnum("03")]
+        fpCartaoCredito = 3,
+
+        [Description("Cartão de Débito")]
+        [XmlEnum("04")]
+        fpCartaoDebito = 4,
+
+        [Description("Crédito Loja")]
+        [XmlEnum("05")]
+        fpCreditoLoja = 5,
+
+        [Description("Vale Alimentação")]
+        [XmlEnum("10")]
+        fpValeAlimentacao = 10,
+
+        [Description("Vale Refeição")]
+        [XmlEnum("11")]
+        fpValeRefeicao = 11,
+
+        [Description("Vale Presente")]
+        [XmlEnum("12")]
+        fpValePresente = 12,
+
+        [Description("Vale Combustível")]
+        [XmlEnum("13")]
+        fpValeCombustivel = 13,
+
+        [Description("Duplicata Mercantil")]
+        [XmlEnum("14")]
+        fpDuplicataMercantil = 14,
+
+        [Description("Boleto Bancário")]
+        [XmlEnum("15")]
+        fpBoletoBancario = 15,
+
+        [Description("=Depósito Bancário")]
+        [XmlEnum("16")]
+        fpDepositoBancario = 16,
+
+        [Description("Pagamento Instantâneo (PIX)")]
+        [XmlEnum("17")]
+        fpPagamentoInstantaneoPIX = 17,
+
+        [Description("Transferência bancária, Carteira Digital")]
+        [XmlEnum("18")]
+        fpTransferenciabancaria = 18,
+
+        [Description("Programa de fidelidade, Cashback, Crédito Virtual")]
+        [XmlEnum("19")]
+        fpProgramadefidelidade = 19,
+
+        [Description("Sem pagamento")]
+        [XmlEnum("90")]
+        fpSemPagamento = 90,
+
+        [Description("Outros")]
+        [XmlEnum("99")]
+        fpOutro = 99
     }
 
 
@@ -432,12 +544,12 @@ namespace DanfeSharp.Esquemas.NFe
     public partial class ICMSTotal
     {
         /// <summary>
-        /// Base de Cálculo do ICMS 
+        /// Base de Cálculo do ICMS
         /// </summary>
         public double vBC { get; set; }
 
         /// <summary>
-        /// Valor Total do ICMS 
+        /// Valor Total do ICMS
         /// </summary>
         public double vICMS { get; set; }
 
@@ -457,12 +569,12 @@ namespace DanfeSharp.Esquemas.NFe
         public double? vFCPUFDest { get; set; }
 
         /// <summary>
-        /// Base de Cálculo do ICMS ST 
+        /// Base de Cálculo do ICMS ST
         /// </summary>
         public double vBCST { get; set; }
 
         /// <summary>
-        /// Valor Total do ICMS ST 
+        /// Valor Total do ICMS ST
         /// </summary>
         public double vST { get; set; }
 
@@ -472,7 +584,7 @@ namespace DanfeSharp.Esquemas.NFe
         public double vProd { get; set; }
 
         /// <summary>
-        /// Valor Total do Frete 
+        /// Valor Total do Frete
         /// </summary>
         public double vFrete { get; set; }
 
@@ -487,32 +599,32 @@ namespace DanfeSharp.Esquemas.NFe
         public double vDesc { get; set; }
 
         /// <summary>
-        /// Valor Total do II 
+        /// Valor Total do II
         /// </summary>
         public double vII { get; set; }
 
         /// <summary>
-        /// Valor Total do IPI 
+        /// Valor Total do IPI
         /// </summary>
         public double vIPI { get; set; }
 
         /// <summary>
-        /// Valor do PIS 
+        /// Valor do PIS
         /// </summary>
         public double vPIS { get; set; }
 
         /// <summary>
-        /// Valor do COFINS 
+        /// Valor do COFINS
         /// </summary>
         public double vCOFINS { get; set; }
 
         /// <summary>
-        /// Outras Despesas acessórias 
+        /// Outras Despesas acessórias
         /// </summary>
         public double vOutro { get; set; }
 
         /// <summary>
-        /// Valor Total da NF-e 
+        /// Valor Total da NF-e
         /// </summary>
         public double vNF { get; set; }
 
@@ -646,22 +758,23 @@ namespace DanfeSharp.Esquemas.NFe
         public Destinatario dest { get; set; }
 
         /// <summary>
-        /// Identificação do Local de retirada 
+        /// Identificação do Local de retirada
         /// </summary>
         public LocalEntregaRetirada retirada { get; set; }
 
         /// <summary>
-        /// Identificação do Local de entrega 
+        /// Identificação do Local de entrega
         /// </summary>
         public LocalEntregaRetirada entrega { get; set; }
 
 
         [XmlElement("det")]
         public List<Detalhe> det { get; set; }
-     
+
         public Total total { get; set; }
         public Transporte transp { get; set; }
         public Cobranca cobr { get; set; }
+        public Pagamento pag { get; set; }
         public InfAdic infAdic { get; set; }
         [XmlAttribute]
         public string versao { get; set; }
@@ -687,6 +800,14 @@ namespace DanfeSharp.Esquemas.NFe
                 return Versao.Parse(versao);
             }
         }
+    }
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = Namespaces.NFe)]
+    public partial class InfNFeSupl
+    {
+        public string qrCode { get; set; }
+        public string urlChave { get; set; }
     }
 
     /// <summary>
@@ -795,7 +916,7 @@ namespace DanfeSharp.Esquemas.NFe
         /// <summary>
         /// Tipo de Impressao
         /// </summary>
-        public int tpImp { get; set; } 
+        public int tpImp { get; set; }
 
         /// <summary>
         /// Forma de emissão da NF-e
@@ -810,10 +931,10 @@ namespace DanfeSharp.Esquemas.NFe
         public DateTimeOffsetIso8601? dhCont { get; set; }
 
         /// <summary>
-        /// Justificativa da entrada em contingência 
+        /// Justificativa da entrada em contingência
         /// </summary>
         public string xJust { get; set; }
-               
+
         /// <summary>
         /// Grupo de informação das NF/NF-e referenciadas
         /// </summary>
@@ -826,7 +947,7 @@ namespace DanfeSharp.Esquemas.NFe
         }
     }
 
-   
+
 
     /// <summary>
     /// Tipo do Documento Fiscal

@@ -11,7 +11,7 @@ namespace DanfeSharp.Modelo
 {
     public static class DanfeViewModelCreator
     {
-        public readonly static IEnumerable<FormaEmissao> FormasEmissaoSuportadas = new FormaEmissao[]{ FormaEmissao.Normal, FormaEmissao.ContingenciaSVCAN, FormaEmissao.ContingenciaSVCRS };
+        public readonly static IEnumerable<FormaEmissao> FormasEmissaoSuportadas = new FormaEmissao[]{ FormaEmissao.Normal, FormaEmissao.ContingenciaSVCAN, FormaEmissao.ContingenciaSVCRS, FormaEmissao.ContingenciaOffLineNFCe };
 
         private static EmpresaViewModel CreateEmpresaFrom(Empresa empresa)
         {
@@ -88,7 +88,7 @@ namespace DanfeSharp.Modelo
         /// <returns>Modelo</returns>
         public static DanfeViewModel CriarDeArquivoXml(Stream stream)
         {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));     
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
             using (StreamReader sr = new StreamReader(stream, true))
             {
@@ -186,24 +186,23 @@ namespace DanfeSharp.Modelo
 
         public static DanfeViewModel CreateFromXml(ProcNFe procNfe)
         {
-            DanfeViewModel model = new DanfeViewModel();
-
             var nfe = procNfe.NFe;
             var infNfe = nfe.infNFe;
             var ide = infNfe.ide;
-            model.TipoEmissao = ide.tpEmis;
+            var isNFe = ide.mod == 55;
+            var isNFCe = ide.mod == 65;
 
-            if (ide.mod != 55)
-            {
-                throw new NotSupportedException("Somente o mod==55 está implementado.");
-            }
+            if (!isNFe && !isNFCe)
+                throw new NotSupportedException("Somente o modelo 55 e 65 está implementado.");
 
-            if(!FormasEmissaoSuportadas.Contains(model.TipoEmissao))
+            if(!FormasEmissaoSuportadas.Contains(ide.tpEmis))
             {
                 throw new NotSupportedException($"O tpEmis {ide.tpEmis} não é suportado.");
             }
 
-            model.Orientacao = ide.tpImp == 1 ? Orientacao.Retrato : Orientacao.Paisagem;
+            var model = new DanfeViewModel();
+            model.TipoEmissao = ide.tpEmis;
+            model.Orientacao = isNFCe || ide.tpImp == 1 ? Orientacao.Retrato : Orientacao.Paisagem;
 
             var infProt = procNfe.protNFe.infProt;
             model.CodigoStatusReposta = infProt.cStat;
@@ -217,9 +216,9 @@ namespace DanfeSharp.Modelo
             model.TipoNF = (int)ide.tpNF;
 
             model.Emitente = CreateEmpresaFrom(infNfe.emit);
-            model.Destinatario = CreateEmpresaFrom(infNfe.dest);
+            model.Destinatario = infNfe.dest != null ? CreateEmpresaFrom(infNfe.dest) : null;
 
-            // Local retirada e entrega 
+            // Local retirada e entrega
             if (infNfe.retirada != null)
             {
                 model.LocalRetirada = CreateLocalRetiradaEntrega(infNfe.retirada);
@@ -298,6 +297,23 @@ namespace DanfeSharp.Modelo
                 }
             }
 
+            if (infNfe.pag != null)
+            {
+                model.TrocoPagamento = infNfe.pag.vTroco;
+
+                foreach(var item in infNfe.pag.detPag)
+                {
+                    var pagamento = new PagamentoViewModel
+                    {
+                        TipoPagamento = item.indPag.Descricao(),
+                        FormaPagamento = item.tPag.Descricao(),
+                        Valor = item.vPag
+                    };
+
+                    model.Pagamentos.Add(pagamento);
+                }
+            }
+
             model.CalculoImposto = CriarCalculoImpostoViewModel(infNfe.total.ICMSTot);
 
             var issqnTotal = infNfe.total.ISSQNtot;
@@ -365,9 +381,15 @@ namespace DanfeSharp.Modelo
             // Contingência SVC-AN e SVC-RS
             if(model.TipoEmissao == FormaEmissao.ContingenciaSVCAN || model.TipoEmissao == FormaEmissao.ContingenciaSVCRS)
             {
-             
+
                 model.ContingenciaDataHora = ide.dhCont?.DateTimeOffsetValue.DateTime;
                 model.ContingenciaJustificativa = ide.xJust;
+            }
+
+            if (isNFCe)
+            {
+                model.QrCode = nfe.infNFeSupl?.qrCode;
+                model.UrlChave = nfe.infNFeSupl?.urlChave;
             }
 
             return model;

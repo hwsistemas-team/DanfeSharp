@@ -10,6 +10,7 @@ namespace DanfeSharp
     /// <summary>
     /// Define um bloco de texto de largura fixa e altura dinâmica.
     /// </summary>
+    [AlturaFixa]
     internal class TextBlock : DrawableBase
     {
         private String _Text;
@@ -36,7 +37,7 @@ namespace DanfeSharp
             set => throw new NotSupportedException();
         }
 
-       
+
 
         public override void Draw(Gfx gfx)
         {
@@ -70,7 +71,7 @@ namespace DanfeSharp
                     w1 = 0;
                 }
 
-                w1 += cw;              
+                w1 += cw;
                 sb1.Append(c[i2]);
             }
 
@@ -90,7 +91,7 @@ namespace DanfeSharp
                 var wl = blocksW[i];
 
                 if (wl > Width)
-                {                 
+                {
 
                     if (sb.Length > 0)
                     {
@@ -162,6 +163,26 @@ namespace DanfeSharp
             SplitText();
             AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda;
             Lines = new List<String>();
+        }
+
+
+
+        public static TextBlock Centro(string text, Fonte f, float width = 0)
+        {
+            return new TextBlock(text, f)
+            {
+                AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
+                Width = width
+            };
+        }
+
+        public static TextBlock Esquerda(string text, Fonte f, float width = 0)
+        {
+            return new TextBlock(text, f)
+            {
+                AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda,
+                Width = width
+            };
         }
     }
 }

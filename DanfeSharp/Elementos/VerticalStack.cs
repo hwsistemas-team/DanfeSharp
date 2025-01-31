@@ -45,7 +45,7 @@ namespace DanfeSharp
                 db.Width = Width;
                 db.SetPosition(x, y);
                 db.Draw(gfx);
-                y += db.Height;             
+                y += db.Height;
             }
         }
 

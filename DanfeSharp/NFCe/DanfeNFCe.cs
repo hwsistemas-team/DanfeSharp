@@ -1,26 +1,26 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DanfeSharp.Blocos;
+using DanfeSharp.Modelo;
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.files;
-using DanfeSharp.Modelo;
 
-namespace DanfeSharp
+namespace DanfeSharp.NFCe
 {
-    public class Danfe : IDisposable
+    public class DanfeNFCe : IDisposable
     {
         public DanfeViewModel ViewModel { get; private set; }
         public File File { get; private set; }
         internal Document PdfDocument { get; private set; }
 
-        internal BlocoCanhoto Canhoto { get; private set; }
-        internal BlocoIdentificacaoEmitente IdentificacaoEmitente { get; private set; }
+        internal BlocoEmitente BlocoEmitenteLogo { get; private set; }
+        internal BlocoQrCode BlocoQrCode { get; private set; }
 
         internal List<BlocoBase> _Blocos;
         internal Estilo EstiloPadrao { get; private set; }
 
-        internal List<DanfePagina> Paginas { get; private set; }
+        internal List<DanfeNFCePagina> Paginas { get; private set; }
 
         private StandardType1Font _FonteRegular;
         private StandardType1Font _FonteNegrito;
@@ -30,8 +30,9 @@ namespace DanfeSharp
         private Boolean _FoiGerado;
 
         private org.pdfclown.documents.contents.xObjects.XObject _LogoObject = null;
+        private org.pdfclown.documents.contents.xObjects.XObject _QRCodeObject = null;
 
-        public Danfe(DanfeViewModel viewModel)
+        public DanfeNFCe(DanfeViewModel viewModel)
         {
             ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 
@@ -40,33 +41,38 @@ namespace DanfeSharp
             PdfDocument = File.Document;
 
             // De acordo com o item 7.7, a fonte deve ser Times New Roman ou Courier New.
-            _FonteFamilia = StandardType1Font.FamilyEnum.Times;
+            _FonteFamilia = StandardType1Font.FamilyEnum.Helvetica;
             _FonteRegular = new StandardType1Font(PdfDocument, _FonteFamilia, false, false);
             _FonteNegrito = new StandardType1Font(PdfDocument, _FonteFamilia, true, false);
             _FonteItalico = new StandardType1Font(PdfDocument, _FonteFamilia, false, true);
 
             EstiloPadrao = CriarEstilo();
 
-            Paginas = new List<DanfePagina>();
-            Canhoto = CriarBloco<BlocoCanhoto>();
-            IdentificacaoEmitente = AdicionarBloco<BlocoIdentificacaoEmitente>();
-            AdicionarBloco<BlocoDestinatarioRemetente>();
+            if (ViewModel.Orientacao == Orientacao.Retrato)
+            {
+                ViewModel.PaginaAltura = Constantes.FolhaNFCeAltura;
+                ViewModel.PaginaLargura = Constantes.FolhaNFCeLargura;
+            }
+            else
+            {
+                ViewModel.PaginaAltura = Constantes.FolhaNFCeLargura;
+                ViewModel.PaginaLargura = Constantes.FolhaNFCeAltura;
+            }
 
-            if (ViewModel.LocalRetirada != null && ViewModel.ExibirBlocoLocalRetirada)
-                AdicionarBloco<BlocoLocalRetirada>();
+            Paginas = new List<DanfeNFCePagina>();
 
-            if (ViewModel.LocalEntrega != null && ViewModel.ExibirBlocoLocalEntrega)
-                AdicionarBloco<BlocoLocalEntrega>();
-
-            if (ViewModel.Duplicatas.Count > 0)
-                AdicionarBloco<BlocoDuplicataFatura>();
-
-            AdicionarBloco<BlocoCalculoImposto>(ViewModel.Orientacao == Orientacao.Paisagem ? EstiloPadrao : CriarEstilo(4.75F));
-            AdicionarBloco<BlocoTransportador>();
-            AdicionarBloco<BlocoDadosAdicionais>(CriarEstilo(tFonteCampoConteudo: 8));
-
-            if(ViewModel.CalculoIssqn.Mostrar)
-                AdicionarBloco<BlocoCalculoIssqn>();
+            BlocoEmitenteLogo = AdicionarBloco<BlocoEmitente>();
+            AdicionarBloco<BlocoDanfeInfo>();
+            AdicionarBloco<BlocoProdutos>();
+            AdicionarBloco<BlocoTotais>();
+            AdicionarBloco<BlocoPagamentos>();
+            AdicionarBloco<BlocoEmissao>();
+            AdicionarBloco<BlocoChaveAcesso>();
+            AdicionarBloco<BlocoConsumidor>();
+            if (ViewModel.QrCode != null)
+                BlocoQrCode = AdicionarBloco<BlocoQrCode>();
+            AdicionarBloco<BlocoProtocolo>();
+            AdicionarBloco<BlocoTributos>();
 
             AdicionarMetadata();
 
@@ -112,6 +118,16 @@ namespace DanfeSharp
             }
         }
 
+        public void AdicionarQrCodeImagem(System.IO.Stream stream)
+        {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+
+            var img = org.pdfclown.documents.contents.entities.Image.Get(stream);
+            if (img == null) throw new InvalidOperationException("O QRCode não pode ser carregado, certifique-se que a imagem esteja no formato JPEG não progressivo.");
+            _QRCodeObject = img.ToXObject(PdfDocument);
+        }
+
+
         private void AdicionarMetadata()
         {
             var info = PdfDocument.Information;
@@ -119,7 +135,32 @@ namespace DanfeSharp
             info[new org.pdfclown.objects.PdfName("TipoDocumento")] = "DANFE";
             info.CreationDate = DateTime.Now;
             info.Creator = String.Format("{0} {1} - {2}", "DanfeSharp", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, "https://github.com/SilverCard/DanfeSharp");
-            info.Title = "DANFE (Documento auxiliar da NFe)";
+            info.Title = "DANFE (Documento auxiliar da NFCe)";
+        }
+
+        public void Gerar()
+        {
+            if (_FoiGerado) throw new InvalidOperationException("O Danfe já foi gerado.");
+
+            BlocoEmitenteLogo.Logo = _LogoObject;
+
+            if (BlocoQrCode != null)
+                BlocoQrCode.QRCode = _QRCodeObject;
+
+            CriarPagina();
+
+            _FoiGerado = true;
+
+        }
+
+        private DanfeNFCePagina CriarPagina()
+        {
+            var p = new DanfeNFCePagina(this);
+            Paginas.Add(p);
+            p.DesenharBlocos(Paginas.Count == 1);
+            p.AjustarTamanhoPagina();
+
+            return p;
         }
 
         private Estilo CriarEstilo(float tFonteCampoCabecalho = 6, float tFonteCampoConteudo = 10)
@@ -127,58 +168,16 @@ namespace DanfeSharp
             return new Estilo(_FonteRegular, _FonteNegrito, _FonteItalico, tFonteCampoCabecalho, tFonteCampoConteudo);
         }
 
-        public void Gerar()
-        {
-            if (_FoiGerado) throw new InvalidOperationException("O Danfe já foi gerado.");
-
-            IdentificacaoEmitente.Logo = _LogoObject;
-            var tabela = new TabelaProdutosServicos(ViewModel, EstiloPadrao);
-
-            while (true)
-            {
-                DanfePagina p = CriarPagina();
-
-                tabela.SetPosition(p.RetanguloCorpo.Location);
-                tabela.SetSize(p.RetanguloCorpo.Size);
-                tabela.Draw(p.Gfx);
-
-                p.Gfx.Stroke();
-                p.Gfx.Flush();
-
-                if (tabela.CompletamenteDesenhada) break;
-
-            }
-
-            PreencherNumeroFolhas();
-            _FoiGerado = true;
-
-        }
-
-        private DanfePagina CriarPagina()
-        {
-            DanfePagina p = new DanfePagina(this);
-            Paginas.Add(p);
-            p.DesenharBlocos(Paginas.Count == 1);
-            p.DesenharCreditos();
-
-            // Ambiente de homologação
-            // 7. O DANFE emitido para representar NF-e cujo uso foi autorizado em ambiente de
-            // homologação sempre deverá conter a frase “SEM VALOR FISCAL” no quadro “Informações
-            // Complementares” ou em marca d’água destacada.
-            if (ViewModel.TipoAmbiente == 2)
-                p.DesenharAvisoHomologacao();
-
-            return p;
-        }
-
         internal T CriarBloco<T>() where T : BlocoBase
         {
-            return (T)Activator.CreateInstance(typeof(T), ViewModel, EstiloPadrao);
+            var bloco = (T)Activator.CreateInstance(typeof(T), ViewModel, EstiloPadrao);
+            return bloco;
         }
 
         internal T CriarBloco<T>(Estilo estilo) where T : BlocoBase
         {
-            return (T)Activator.CreateInstance(typeof(T), ViewModel, estilo);
+            var bloco = (T)Activator.CreateInstance(typeof(T), ViewModel, estilo);
+            return bloco;
         }
 
         internal T AdicionarBloco<T>() where T: BlocoBase
@@ -200,14 +199,6 @@ namespace DanfeSharp
             _Blocos.Add(bloco);
         }
 
-        internal void PreencherNumeroFolhas()
-        {
-            int nFolhas = Paginas.Count;
-            for (int i = 0; i < Paginas.Count; i++)
-            {
-                Paginas[i].DesenhaNumeroPaginas(i + 1, nFolhas);
-            }
-        }
 
         public void Salvar(String path)
         {
