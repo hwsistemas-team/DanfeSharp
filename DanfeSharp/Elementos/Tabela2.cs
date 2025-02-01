@@ -24,7 +24,7 @@ namespace DanfeSharp
         public Fonte FonteCorpo { get; private set; }
         public Fonte FonteCabecalho { get; private set; }
 
-        public Tabela2(Estilo estilo) : base(estilo)
+        public Tabela2(ElementoContexto contexto) : base(contexto)
         {
             Colunas = new List<List<TabelaColuna>> { new List<TabelaColuna>() };
             Linhas = new List<List<string>>();
@@ -37,8 +37,8 @@ namespace DanfeSharp
 
             // 7.7.7 Conteúdo dos Campos do Quadro “Dados dos Produtos/Serviços”
             // Deverá ter tamanho mínimo de seis(6) pontos, ou 17 CPP.
-            FonteCorpo = estilo.CriarFonteRegular(6F);
-            FonteCabecalho = estilo.CriarFonteNegrito(6F);
+            FonteCorpo = Estilo.CriarFonteRegular(6F);
+            FonteCabecalho = Estilo.CriarFonteNegrito(6F);
         }
 
         public Tabela2 ComColuna(float larguraP, AlinhamentoHorizontal ah, params String[] cabecalho)
@@ -139,7 +139,7 @@ namespace DanfeSharp
                         var width =  w - 2F * Estilo.PaddingHorizontal;
                         v = TextOverflow.TratarTexto(v, FonteCorpo, width, addElipses: false);
 
-                        tb[i] = new TextBlock(v, FonteCorpo)
+                        tb[i] = new TextBlock(Contexto, v, FonteCorpo)
                         {
                             Width = width,
                             X = x + PaddingHorizontal,
@@ -199,7 +199,7 @@ namespace DanfeSharp
                     float w = Width * coluna.PorcentagemLargura / 100F;
                     var r = new RectangleF(x, _DY, w, ac);
 
-                    var tb = new TextStack(r.InflatedRetangle(1F));
+                    var tb = new TextStack(Contexto, r.InflatedRetangle(1F));
                     tb.AlinhamentoVertical = AlinhamentoVertical.Centro;
                     tb.AlinhamentoHorizontal = coluna.AlinhamentoHorizontal;
 

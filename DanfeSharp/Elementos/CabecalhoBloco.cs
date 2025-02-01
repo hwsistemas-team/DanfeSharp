@@ -11,7 +11,7 @@ namespace DanfeSharp
         public const float MargemSuperior = 0.8F;
         public String Cabecalho { get; set; }
 
-        public CabecalhoBloco(Estilo estilo, String cabecalho) : base(estilo)
+        public CabecalhoBloco(ElementoContexto contexto, String cabecalho) : base(contexto)
         {
             Cabecalho = cabecalho ?? throw new ArgumentNullException(cabecalho);
         }
@@ -19,7 +19,7 @@ namespace DanfeSharp
         public override void Draw(Gfx gfx)
         {
             base.Draw(gfx);
-            gfx.DrawString(Cabecalho.ToUpper(), BoundingBox, Estilo.FonteBlocoCabecalho, 
+            gfx.DrawString(Cabecalho.ToUpper(), BoundingBox, Estilo.FonteBlocoCabecalho,
                 AlinhamentoHorizontal.Esquerda, AlinhamentoVertical.Base );
         }
 

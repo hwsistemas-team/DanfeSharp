@@ -25,7 +25,7 @@ namespace DanfeSharp.Test
         {
             var outPdfFilePath = Path.Combine(OutputDirectory, Path.GetFileNameWithoutExtension(xmlPath) + ".pdf");
             var model = DanfeViewModelCreator.CriarDeArquivoXml(Path.Combine(InputXmlDirectoryPrefix, xmlPath));
-            using (Danfe danfe = new Danfe(model))
+            using (Danfe danfe = new Danfe(model, new DanfeConfig()))
             {
                 danfe.Gerar();
                 danfe.Salvar(outPdfFilePath);

@@ -1,12 +1,11 @@
-﻿using DanfeSharp.Modelo;
-
+﻿
 namespace DanfeSharp.Blocos
 {
     internal class BlocoCalculoIssqn : BlocoBase
     {
-        public BlocoCalculoIssqn(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoCalculoIssqn(BlocoContexto contexto) : base(contexto)
         {
-            var m = viewModel.CalculoIssqn;
+            var m = ViewModel.CalculoIssqn;
 
             AdicionarLinhaCampos()
                 .ComCampo("INSCRIÇÃO MUNICIPAL", m.InscricaoMunicipal, AlinhamentoHorizontal.Centro)

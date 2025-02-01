@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using DanfeSharp.Blocos;
 using DanfeSharp.Modelo;
 using org.pdfclown.documents;
@@ -10,7 +11,6 @@ namespace DanfeSharp.NFCe
 {
     public class DanfeNFCe : IDisposable
     {
-        public DanfeViewModel ViewModel { get; private set; }
         public File File { get; private set; }
         internal Document PdfDocument { get; private set; }
 
@@ -18,7 +18,7 @@ namespace DanfeSharp.NFCe
         internal BlocoQrCode BlocoQrCode { get; private set; }
 
         internal List<BlocoBase> _Blocos;
-        internal Estilo EstiloPadrao { get; private set; }
+        internal DanfeContext Contexto { get; private set; }
 
         internal List<DanfeNFCePagina> Paginas { get; private set; }
 
@@ -32,10 +32,8 @@ namespace DanfeSharp.NFCe
         private org.pdfclown.documents.contents.xObjects.XObject _LogoObject = null;
         private org.pdfclown.documents.contents.xObjects.XObject _QRCodeObject = null;
 
-        public DanfeNFCe(DanfeViewModel viewModel)
+        public DanfeNFCe(DanfeViewModel viewModel, DanfeConfig config)
         {
-            ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-
             _Blocos = new List<BlocoBase>();
             File = new File();
             PdfDocument = File.Document;
@@ -46,31 +44,32 @@ namespace DanfeSharp.NFCe
             _FonteNegrito = new StandardType1Font(PdfDocument, _FonteFamilia, true, false);
             _FonteItalico = new StandardType1Font(PdfDocument, _FonteFamilia, false, true);
 
-            EstiloPadrao = CriarEstilo();
+            Contexto = new DanfeContext
+            {
+                Estilo =  CriarEstilo(),
+                ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel)),
+                Config = config ?? throw new ArgumentNullException(nameof(config))
+            };
 
-            if (ViewModel.Orientacao == Orientacao.Retrato)
-            {
-                ViewModel.PaginaAltura = Constantes.FolhaNFCeAltura;
-                ViewModel.PaginaLargura = Constantes.FolhaNFCeLargura;
-            }
+            if (Contexto.Config.Orientacao == Orientacao.Retrato)
+                Contexto.Retangulo = new RectangleF(0, 0, Constantes.FolhaNFCeLargura,  Constantes.FolhaNFCeAltura);
             else
-            {
-                ViewModel.PaginaAltura = Constantes.FolhaNFCeLargura;
-                ViewModel.PaginaLargura = Constantes.FolhaNFCeAltura;
-            }
+                Contexto.Retangulo = new RectangleF(0, 0, Constantes.FolhaNFCeAltura,  Constantes.FolhaNFCeLargura);
+
+            Contexto.RetanguloDesenhavel = Contexto.Retangulo.InflatedRetangle(Contexto.Config.Margem);
 
             Paginas = new List<DanfeNFCePagina>();
 
             BlocoEmitenteLogo = AdicionarBloco<BlocoEmitente>();
             AdicionarBloco<BlocoDanfeInfo>();
-            if (ViewModel.NFCeExibirItens)
+            if (Contexto.Config.NFCeExibirItens)
                 AdicionarBloco<BlocoProdutos>();
             AdicionarBloco<BlocoTotais>();
             AdicionarBloco<BlocoPagamentos>();
             AdicionarBloco<BlocoEmissao>();
             AdicionarBloco<BlocoChaveAcesso>();
             AdicionarBloco<BlocoConsumidor>();
-            if (ViewModel.QrCode != null)
+            if (Contexto.ViewModel.QrCode != null)
                 BlocoQrCode = AdicionarBloco<BlocoQrCode>();
             AdicionarBloco<BlocoProtocolo>();
             AdicionarBloco<BlocoTributos>();
@@ -132,7 +131,7 @@ namespace DanfeSharp.NFCe
         private void AdicionarMetadata()
         {
             var info = PdfDocument.Information;
-            info[new org.pdfclown.objects.PdfName("ChaveAcesso")] = ViewModel.ChaveAcesso;
+            info[new org.pdfclown.objects.PdfName("ChaveAcesso")] = Contexto.ViewModel.ChaveAcesso;
             info[new org.pdfclown.objects.PdfName("TipoDocumento")] = "DANFE";
             info.CreationDate = DateTime.Now;
             info.Creator = String.Format("{0} {1} - {2}", "DanfeSharp", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, "https://github.com/SilverCard/DanfeSharp");
@@ -171,13 +170,7 @@ namespace DanfeSharp.NFCe
 
         internal T CriarBloco<T>() where T : BlocoBase
         {
-            var bloco = (T)Activator.CreateInstance(typeof(T), ViewModel, EstiloPadrao);
-            return bloco;
-        }
-
-        internal T CriarBloco<T>(Estilo estilo) where T : BlocoBase
-        {
-            var bloco = (T)Activator.CreateInstance(typeof(T), ViewModel, estilo);
+            var bloco = (T)Activator.CreateInstance(typeof(T), Contexto);
             return bloco;
         }
 
@@ -186,18 +179,6 @@ namespace DanfeSharp.NFCe
             var bloco = CriarBloco<T>();
             _Blocos.Add(bloco);
             return bloco;
-        }
-
-        internal T AdicionarBloco<T>(Estilo estilo) where T : BlocoBase
-        {
-            var bloco = CriarBloco<T>(estilo);
-            _Blocos.Add(bloco);
-            return bloco;
-        }
-
-        internal void AdicionarBloco(BlocoBase bloco)
-        {
-            _Blocos.Add(bloco);
         }
 
 

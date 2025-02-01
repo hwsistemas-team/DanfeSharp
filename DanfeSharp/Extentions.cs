@@ -76,6 +76,9 @@ namespace DanfeSharp
 
         public static RectangleF InflatedRetangle(this RectangleF rect, float value) => rect.InflatedRetangle(value, value, value);
 
+        public static RectangleF Copy(this RectangleF rect) => new RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
+
+
         public static RectangleF ToPointMeasure(this RectangleF r) => new RectangleF(r.X.ToPoint(), r.Y.ToPoint(), r.Width.ToPoint(), r.Height.ToPoint());
 
         public static RectangleF CutTop(this RectangleF r, float height) => new RectangleF(r.X, r.Y + height, r.Width, r.Height - height);
@@ -83,7 +86,7 @@ namespace DanfeSharp
         public static RectangleF CutLeft(this RectangleF r, float width) => new RectangleF(r.X + width, r.Y, r.Width - width, r.Height);
 
         public static PointF ToPointMeasure(this PointF r) => new PointF(r.X.ToPoint(), r.Y.ToPoint());
-        
+
         public static StringBuilder AppendChaveValor(this StringBuilder sb, String chave, String valor)
         {
             if (sb.Length > 0) sb.Append(' ');

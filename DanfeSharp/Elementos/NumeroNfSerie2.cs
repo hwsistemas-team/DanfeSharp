@@ -10,7 +10,7 @@ namespace DanfeSharp
         public RectangleF RetanguloNumeroFolhas { get; private set; }
         public DanfeViewModel ViewModel { get; private set; }
 
-        public NumeroNfSerie2(Estilo estilo, DanfeViewModel viewModel) : base(estilo)
+        public NumeroNfSerie2(ElementoContexto contexto, DanfeViewModel viewModel) : base(contexto)
         {
             ViewModel = viewModel;
         }
@@ -34,7 +34,7 @@ namespace DanfeSharp
             //         descrições do tipo de operação, “ENTRADA” ou “SAÍDA” deverão ter tamanho
             //         mínimo de oito(8) pontos, ou 17 CPP.
 
-            float paddingHorizontal = ViewModel.Orientacao == Orientacao.Retrato ? 2.5F : 5F;
+            float paddingHorizontal = Config.Orientacao == Orientacao.Retrato ? 2.5F : 5F;
 
             var rp1 = BoundingBox.InflatedRetangle(1F, 0.5F, paddingHorizontal);
             var rp2 = rp1;
@@ -48,7 +48,7 @@ namespace DanfeSharp
             var f2 = Estilo.CriarFonteRegular(8F);
             var f2h = (float)f2.AlturaLinha;
 
-            var ts = new TextStack(rp2)
+            var ts = new TextStack(Contexto, rp2)
             {
                 AlinhamentoVertical = AlinhamentoVertical.Topo
             }
@@ -60,7 +60,7 @@ namespace DanfeSharp
             rp2 = rp2.CutTop(2F * f2h + 1.5F);
 
 
-            ts = new TextStack(rp2)
+            ts = new TextStack(Contexto, rp2)
             {
                 AlinhamentoVertical = AlinhamentoVertical.Topo,
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda
@@ -83,7 +83,7 @@ namespace DanfeSharp
             rp2.Height = 2F * f4h * TextStack.DefaultLineHeightScale + f2h;
             rp2.Y = rp1.Bottom - rp2.Height;
 
-            ts = new TextStack(rp2)
+            ts = new TextStack(Contexto, rp2)
             {
                 AlinhamentoVertical = AlinhamentoVertical.Topo,
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Centro

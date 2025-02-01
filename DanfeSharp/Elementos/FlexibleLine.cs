@@ -20,13 +20,13 @@ namespace DanfeSharp
         /// </summary>
         public List<float> ElementosLargurasP { get; private set; }
 
-        public FlexibleLine()
+        public FlexibleLine(DrawableContexto contexto) : base(contexto)
         {
             Elementos = new List<DrawableBase>();
             ElementosLargurasP = new List<float>();
         }
 
-        public FlexibleLine(float width, float height) : this()
+        public FlexibleLine(DrawableContexto contexto, float width, float height) : this(contexto)
         {
             Width = width;
             Height = height;
@@ -41,7 +41,7 @@ namespace DanfeSharp
         public virtual FlexibleLine ComLarguras(params float[] elementosLarguras)
         {
             if (elementosLarguras.Length != Elementos.Count) throw new ArgumentException("A quantidade de larguras deve ser igual a de elementos.");
-            
+
             float somaLarguras = elementosLarguras.Sum();
             if (somaLarguras > 100) throw new ArgumentOutOfRangeException("A soma das larguras passam de 100%.");
 
@@ -70,7 +70,7 @@ namespace DanfeSharp
         }
 
         public void Posicionar()
-        {         
+        {
             float wTotal = Elementos.Sum(s => s.Width);
 
             float x = X, y = Y;
@@ -79,7 +79,7 @@ namespace DanfeSharp
             {
                 var e = Elementos[i];
                 var ew = (Width * ElementosLargurasP[i]) / 100F;
-						
+
                 if (Attribute.IsDefined(e.GetType(), typeof(AlturaFixaAttribute)))
                 {
                     e.Width = ew;
@@ -89,7 +89,7 @@ namespace DanfeSharp
                     e.SetSize(ew , Height);
                 }
 
-                e.SetPosition(x, y);           
+                e.SetPosition(x, y);
                 x += e.Width;
             }
         }

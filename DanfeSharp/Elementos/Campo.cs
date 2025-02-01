@@ -16,7 +16,7 @@ namespace DanfeSharp
 
         public Boolean IsConteudoNegrito { get; set; }
 
-        public Campo(String cabecalho, String conteudo, Estilo estilo, AlinhamentoHorizontal alinhamentoHorizontalConteudo = AlinhamentoHorizontal.Esquerda) : base(estilo)
+        public Campo(ElementoContexto contexto, String cabecalho, String conteudo, AlinhamentoHorizontal alinhamentoHorizontalConteudo = AlinhamentoHorizontal.Esquerda) : base(contexto)
         {
             Cabecalho = cabecalho;
             this.Conteudo = conteudo;

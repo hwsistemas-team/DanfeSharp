@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DanfeSharp.Modelo;
 
 namespace DanfeSharp.Blocos
@@ -11,10 +7,10 @@ namespace DanfeSharp.Blocos
     {
         public LocalEntregaRetiradaViewModel Model { get; private set; }
 
-        public BlocoLocalEntregaRetirada(DanfeViewModel viewModel, Estilo estilo, LocalEntregaRetiradaViewModel localModel) : base(viewModel, estilo)
+        public BlocoLocalEntregaRetirada(BlocoContexto contexto, LocalEntregaRetiradaViewModel localModel) : base(contexto)
         {
             Model = localModel ?? throw new ArgumentNullException(nameof(localModel));
-            
+
             AdicionarLinhaCampos()
             .ComCampo(Strings.NomeRazaoSocial, Model.NomeRazaoSocial)
             .ComCampo(Strings.CnpjCpf, Formatador.FormatarCpfCnpj(Model.CnpjCpf), AlinhamentoHorizontal.Centro)

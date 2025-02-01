@@ -11,45 +11,6 @@ namespace DanfeSharp.Modelo
     /// </summary>
     public class DanfeViewModel
     {
-        private int _QuantidadeCanhoto;
-
-        /// <summary>
-        /// Quantidade de canhotos a serem impressos.
-        /// </summary>
-        public int QuantidadeCanhotos {
-            get => _QuantidadeCanhoto;
-            set
-            {
-                if (value >= 0 && value <= 2)
-                    _QuantidadeCanhoto = value;
-                else
-                    throw new ArgumentOutOfRangeException("A quantidade de canhotos deve de 0 a 2.");
-            }
-        }
-
-        private float _Margem;
-
-        /// <summary>
-        /// Magens horizontais e verticais do DANFE.
-        /// </summary>
-        public float Margem
-        {
-            get => _Margem;
-            set
-            {
-                if (value >= 2 && value <= 5)
-                    _Margem = value;
-                else
-                    throw new ArgumentOutOfRangeException("A margem deve ser entre 2 e 5.");
-            }
-        }
-
-        public bool NFCeItensEm2Linhas { get; set; } = false;
-        public bool NFCeExibirItens { get; set; } = true;
-
-        public float PaginaAltura { get; set; }
-        public float PaginaLargura { get; set; }
-
         /// <summary>
         /// <para>Número do Documento Fiscal</para>
         /// <para>Tag nNF</para>
@@ -62,13 +23,10 @@ namespace DanfeSharp.Modelo
         /// </summary>
         public int NfSerie { get; set; }
 
-        public Orientacao Orientacao { get; set; }
-
         /// <summary>
         /// Chave de Acesso
         /// </summary>
         public String ChaveAcesso { get; set; }
-
 
         /// <summary>
         /// <para>Descrição da Natureza da Operação</para>
@@ -212,37 +170,6 @@ namespace DanfeSharp.Modelo
 
         #endregion
 
-        #region Opções de exibição
-
-        /// <summary>
-        /// Exibi os valores do ICMS Interestadual e Valor Total dos Impostos no bloco Cálculos do Imposto.
-        /// </summary>
-        public bool ExibirIcmsInterestadual { get; set; } = true;
-
-        /// <summary>
-        /// Exibi os valores do PIS e COFINS no bloco Cálculos do Imposto.
-        /// </summary>
-        public bool ExibirPisConfins { get; set; } = true;
-
-        /// <summary>
-        /// Exibi o bloco "Informações do local de entrega" quando o elemento "entrega" estiver disponível.
-        /// </summary>
-        public bool ExibirBlocoLocalEntrega { get; set; } = true;
-
-        /// <summary>
-        /// Exibi o bloco "Informações do local de retirada" quando o elemento "retirada" estiver disponível.
-        /// </summary>
-        public bool ExibirBlocoLocalRetirada { get; set; } = true;
-
-
-        /// <summary>
-        /// Exibe o Nome Fantasia, caso disponível, ao invés da Razão Social no quadro identificação do emitente.
-        /// </summary>
-        public bool PreferirEmitenteNomeFantasia { get; set; } = true;
-
-
-        #endregion
-
         #region Contingencia
 
         public DateTime? ContingenciaDataHora { get; set; }
@@ -253,9 +180,6 @@ namespace DanfeSharp.Modelo
 
         public DanfeViewModel ()
 	    {
-            QuantidadeCanhotos = 1;
-            Margem = 4;
-            Orientacao = Orientacao.Retrato;
             CalculoImposto = new CalculoImpostoViewModel();
             Emitente = new EmpresaViewModel();
             Destinatario = new EmpresaViewModel();
@@ -266,9 +190,6 @@ namespace DanfeSharp.Modelo
             CalculoIssqn = new CalculoIssqnViewModel();
             NotasFiscaisReferenciadas = new List<string>();
         }
-
-
-        public Boolean MostrarCalculoIssqn { get; set; }
 
 
         /// <summary>
@@ -293,7 +214,7 @@ namespace DanfeSharp.Modelo
         {
             get
             {
-                return $"Recebemos de {Emitente.RazaoSocial} os produtos e/ou serviços constantes na Nota Fiscal Eletrônica indicada {(Orientacao == Orientacao.Retrato ? "abaixo" : "ao lado" )}. Emissão: {DataHoraEmissao.Formatar()} Valor Total: R$ {CalculoImposto.ValorTotalNota.Formatar()} Destinatário: {Destinatario.RazaoSocial}";
+                return $"Recebemos de {Emitente.RazaoSocial} os produtos e/ou serviços constantes na Nota Fiscal Eletrônica. Emissão: {DataHoraEmissao.Formatar()} Valor Total: R$ {CalculoImposto.ValorTotalNota.Formatar()} Destinatário: {Destinatario.RazaoSocial}";
             }
         }
 
@@ -377,9 +298,5 @@ namespace DanfeSharp.Modelo
 
             return sb.ToString();
         }
-
-        public Boolean IsRetrato => Orientacao == Orientacao.Retrato;
-        public Boolean IsPaisagem => Orientacao == Orientacao.Paisagem;
-
     }
 }

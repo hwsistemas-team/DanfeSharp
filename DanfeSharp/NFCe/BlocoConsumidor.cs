@@ -1,11 +1,10 @@
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoConsumidor : BlocoBase
     {
-        public BlocoConsumidor(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoConsumidor(BlocoContexto contexto) : base(contexto)
         {
             var fn = Estilo.FonteNFCeNegrito2;
             var fr = Estilo.FonteNFCe3;
@@ -13,25 +12,25 @@ namespace DanfeSharp.NFCe
             var lv3 = ElementoVazio.T3();
 
             var dest = ViewModel.Destinatario;
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
             if (dest == null)
             {
-                MainVerticalStack.Add(new LinhaSolida(1));
-                MainVerticalStack.Add(TextBlock.Centro("CONSUMIDOR NÃO IDENTIFICADO", fn, w));
+                MainVerticalStack.Add(new LinhaSolida(contexto, 1));
+                MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR NÃO IDENTIFICADO", fn, w));
                 return;
             }
 
             var nome = string.IsNullOrEmpty(dest.NomeFantasia) ? dest.RazaoSocial : dest.NomeFantasia;
-            MainVerticalStack.Add(new LinhaSolida(1));
-            MainVerticalStack.Add(TextBlock.Centro("CONSUMIDOR", fn, w));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR", fn, w));
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Centro($"CPF: {dest.CnpjCpf} {nome}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"CPF: {dest.CnpjCpf} {nome}", fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro($"End.: {dest.EnderecoLinha1}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"End.: {dest.EnderecoLinha1}", fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro($"Bairro: {dest.EnderecoLinha2} {dest.EnderecoLinha3}", fr, w));
-            MainVerticalStack.Add(new LinhaSolida(1));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Bairro: {dest.EnderecoLinha2} {dest.EnderecoLinha3}", fr, w));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

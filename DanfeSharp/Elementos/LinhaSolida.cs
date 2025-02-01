@@ -9,7 +9,7 @@ namespace DanfeSharp
         public float Margin { get; set; }
         public double[] DashPattern { get; set; }
 
-        public LinhaSolida(float margin)
+        public LinhaSolida(DrawableContexto contexto, float margin) : base(contexto)
         {
             Margin = margin;
         }

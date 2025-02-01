@@ -1,10 +1,9 @@
-﻿using DanfeSharp.Modelo;
-
+﻿
 namespace DanfeSharp.Blocos
 {
     class BlocoCalculoImposto : BlocoBase
     {
-        public BlocoCalculoImposto(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoCalculoImposto(BlocoContexto contexto) : base(contexto)
         {
             var m = ViewModel.CalculoImposto;
 
@@ -15,13 +14,13 @@ namespace DanfeSharp.Blocos
             .ComCampoNumerico("VALOR DO ICMS SUBST.", m.ValorIcmsSt)
             .ComCampoNumerico("V. IMP. IMPORTAÇÃO", m.ValorII);
 
-            if (ViewModel.ExibirIcmsInterestadual)
+            if (Config.ExibirIcmsInterestadual)
             {
                 l.ComCampoNumerico("V. ICMS UF REMET.", m.vICMSUFRemet)
                  .ComCampoNumerico("VALOR DO FCP", m.vFCPUFDest);
             }
 
-            if (ViewModel.ExibirPisConfins)
+            if (Config.ExibirPisConfins)
             {
                 l.ComCampoNumerico("VALOR DO PIS", m.ValorPis);
             }
@@ -36,13 +35,13 @@ namespace DanfeSharp.Blocos
             .ComCampoNumerico("Outras Despesas", m.OutrasDespesas)
             .ComCampoNumerico("Valor Ipi", m.ValorIpi);
 
-            if (ViewModel.ExibirIcmsInterestadual)
+            if (Config.ExibirIcmsInterestadual)
             {
                 l.ComCampoNumerico("V. ICMS UF DEST.", m.vICMSUFDest)
                 .ComCampoNumerico("V. TOT. TRIB.", m.ValorAproximadoTributos);
             }
 
-            if (ViewModel.ExibirPisConfins)
+            if (Config.ExibirPisConfins)
             {
                 l.ComCampoNumerico("VALOR DO COFINS", m.ValorCofins);
             }

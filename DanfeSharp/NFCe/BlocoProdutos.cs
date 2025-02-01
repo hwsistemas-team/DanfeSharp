@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoProdutos : BlocoBase
     {
-        public BlocoProdutos(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoProdutos(BlocoContexto contexto) : base(contexto)
         {
             var ae = AlinhamentoHorizontal.Esquerda;
             var ac = AlinhamentoHorizontal.Centro;
             var ad = AlinhamentoHorizontal.Direita;
 
-            if (viewModel.NFCeItensEm2Linhas)
+            if (Contexto.Config.NFCeItensEm2Linhas)
             {
-                var tbl = new Tabela2(Estilo)
+                var tbl = new Tabela2(contexto)
                     .ComColuna(15, ae, "Código")
                     .ComColuna(85, ae, "Descrição")
                     .NovaGrupoColunas()
@@ -24,7 +23,7 @@ namespace DanfeSharp.NFCe
                     .ComColuna(28, ac, "Vl Unit =")
                     .ComColuna(29, ad, "Vl Total");
 
-                foreach(var item in viewModel.Produtos)
+                foreach(var item in ViewModel.Produtos)
                 {
                     tbl.AdicionarLinha(new List<List<string>>
                     {
@@ -36,8 +35,8 @@ namespace DanfeSharp.NFCe
                         new List<string>
                         {
                             null,
-                            item.Quantidade.Formatar(),
-                            item.ValorUnitario.Formatar(),
+                            item.Quantidade.Formatar(Config.FormatoProdutoQuantidade),
+                            item.ValorUnitario.Formatar(Config.FormatoProdutoValorUnitario),
                             item.ValorTotal.Formatar()
                         }
                     });
@@ -48,21 +47,21 @@ namespace DanfeSharp.NFCe
             }
             else
             {
-                var tbl = new Tabela2(Estilo)
+                var tbl = new Tabela2(contexto)
                 .ComColuna(10, ae, "Código")
                 .ComColuna(30, ae, "Descrição")
                 .ComColuna(20, ac, "Qtd Un x")
                 .ComColuna(20, ac, "Vl Unit =")
                 .ComColuna(20, ad, "Vl Total");
 
-                foreach(var item in viewModel.Produtos)
+                foreach(var item in ViewModel.Produtos)
                 {
                     tbl.AdicionarLinha(new List<string>
                     {
                         item.Codigo,
                         item.Descricao,
-                        item.Quantidade.Formatar(),
-                        item.ValorUnitario.Formatar(),
+                        item.Quantidade.Formatar(Config.FormatoProdutoQuantidade),
+                        item.ValorUnitario.Formatar(Config.FormatoProdutoValorUnitario),
                         item.ValorTotal.Formatar()
                     });
                 }

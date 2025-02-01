@@ -8,13 +8,12 @@ namespace DanfeSharp
     /// </summary>
     internal abstract class ElementoBase : DrawableBase
     {
-        public Estilo Estilo { get; protected set; }
+        internal new ElementoContexto Contexto => (ElementoContexto)base.Contexto;
+        public Estilo Estilo => Contexto.Estilo;
         public virtual bool PossuiContono => true;
+        public DanfeConfig Config => Contexto.Config;
 
-        public ElementoBase(Estilo estilo)
-        {
-            Estilo = estilo ?? throw new ArgumentNullException(nameof(estilo));
-        }
+        public ElementoBase(ElementoContexto contexto) : base(contexto) { }
 
         public override void Draw(Gfx gfx)
         {

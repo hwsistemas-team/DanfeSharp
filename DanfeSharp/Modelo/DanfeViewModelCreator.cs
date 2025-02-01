@@ -202,7 +202,6 @@ namespace DanfeSharp.Modelo
 
             var model = new DanfeViewModel();
             model.TipoEmissao = ide.tpEmis;
-            model.Orientacao = isNFCe || ide.tpImp == 1 ? Orientacao.Retrato : Orientacao.Paisagem;
 
             var infProt = procNfe.protNFe.infProt;
             model.CodigoStatusReposta = infProt.cStat;

@@ -1,20 +1,19 @@
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoProtocolo : BlocoBase
     {
-        public BlocoProtocolo(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoProtocolo(BlocoContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe2;
             var ls = ElementoVazio.T0();
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro("Protocolo de Autorização", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Protocolo de Autorização", fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(viewModel.ProtocoloAutorizacao, fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, ViewModel.ProtocoloAutorizacao, fr, w));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

@@ -1,23 +1,24 @@
-﻿using DanfeSharp.Modelo;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 
 namespace DanfeSharp.Test
 {
     [TestClass]
     public class DanfeTest
-    {             
+    {
 
         [TestMethod]
         public void RetratoSemIcmsInterestadual()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            model.ExibirIcmsInterestadual = false;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato,
+                ExibirIcmsInterestadual = false
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -26,20 +27,29 @@ namespace DanfeSharp.Test
         public void PaisagemSemIcmsInterestadual()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Paisagem;
-            model.ExibirIcmsInterestadual = false;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Paisagem,
+                ExibirIcmsInterestadual = false
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
-        }       
+        }
 
         [TestMethod]
         public void Paisagem_2Canhotos()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Paisagem;
-            model.QuantidadeCanhotos = 2;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Paisagem,
+                QuantidadeCanhotos = 2
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -48,9 +58,13 @@ namespace DanfeSharp.Test
         public void Retrato_2Canhotos()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            model.QuantidadeCanhotos = 2;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato,
+                QuantidadeCanhotos = 2
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -59,9 +73,13 @@ namespace DanfeSharp.Test
         public void Paisagem_SemCanhoto()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Paisagem;
-            model.QuantidadeCanhotos = 0;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Paisagem,
+                QuantidadeCanhotos = 0
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -70,9 +88,13 @@ namespace DanfeSharp.Test
         public void Retrato_SemCanhoto()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            model.QuantidadeCanhotos = 0;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato,
+                QuantidadeCanhotos = 0
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -84,8 +106,13 @@ namespace DanfeSharp.Test
             model.TipoEmissao = Esquemas.NFe.FormaEmissao.ContingenciaSVCAN;
             model.ContingenciaDataHora = DateTime.Now;
             model.ContingenciaJustificativa = "Aqui vai o motivo da contingência";
-            model.Orientacao = Orientacao.Retrato;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -97,8 +124,13 @@ namespace DanfeSharp.Test
             model.TipoEmissao = Esquemas.NFe.FormaEmissao.ContingenciaSVCRS;
             model.ContingenciaDataHora = DateTime.Now;
             model.ContingenciaJustificativa = "Aqui vai o motivo da contingência";
-            model.Orientacao = Orientacao.Retrato;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -107,8 +139,13 @@ namespace DanfeSharp.Test
         public void Retrato()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);       
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -117,9 +154,14 @@ namespace DanfeSharp.Test
         public void OpcaoPreferirEmitenteNomeFantasia_False()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            model.PreferirEmitenteNomeFantasia = false;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato,
+                PreferirEmitenteNomeFantasia = false
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -128,8 +170,13 @@ namespace DanfeSharp.Test
         public void Paisagem()
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Paisagem;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Paisagem
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -139,8 +186,13 @@ namespace DanfeSharp.Test
         {
             var model = FabricaFake.DanfeViewModel_1();
             model.TipoAmbiente = 2;
-            model.Orientacao = Orientacao.Retrato;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -150,8 +202,13 @@ namespace DanfeSharp.Test
         {
             var model = FabricaFake.DanfeViewModel_1();
             model.TipoAmbiente = 2;
-            model.Orientacao = Orientacao.Paisagem;
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Paisagem
+            };
+
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config);
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -161,7 +218,7 @@ namespace DanfeSharp.Test
         {
             var model = FabricaFake.DanfeViewModel_1();
             model.LocalEntrega = FabricaFake.LocalEntregaRetiradaFake();
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, new DanfeConfig());
             d.Gerar();
             d.SalvarTestPdf();
         }
@@ -171,7 +228,7 @@ namespace DanfeSharp.Test
         {
             var model = FabricaFake.DanfeViewModel_1();
             model.LocalRetirada = FabricaFake.LocalEntregaRetiradaFake();
-            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model);
+            DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, new DanfeConfig());
             d.Gerar();
             d.SalvarTestPdf();
         }

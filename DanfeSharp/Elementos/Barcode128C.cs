@@ -7,7 +7,7 @@ using DanfeSharp.Graphics;
 namespace DanfeSharp
 {
     /// <summary>
-    /// Desenha o Código de Barras Code 128C 
+    /// Desenha o Código de Barras Code 128C
     /// </summary>
     internal class Barcode128C : ElementoBase
     {
@@ -142,7 +142,7 @@ namespace DanfeSharp
 
         }
 
-        public Barcode128C(String code, Estilo estilo, float largura = 75F) : base(estilo)
+        public Barcode128C(ElementoContexto contexto, String code, float largura = 75F) : base(contexto)
         {
             if (String.IsNullOrWhiteSpace(code))
             {
@@ -167,7 +167,7 @@ namespace DanfeSharp
         }
 
         private void DrawBarcode(RectangleF rect, Gfx gfx)
-        {      
+        {
 
             List<byte> codeBytes = new List<byte>();
 

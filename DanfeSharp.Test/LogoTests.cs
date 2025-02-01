@@ -18,8 +18,11 @@ namespace DanfeSharp.Test
         public void TestLogo(String logoPath, [CallerMemberName] string pdfName = null)
         {
             var model = FabricaFake.DanfeViewModel_1();
-            model.Orientacao = Orientacao.Retrato;
-            using (DanfeSharp.Danfe d = new DanfeSharp.Danfe(model))
+            var config = new DanfeConfig
+            {
+                Orientacao = Orientacao.Retrato
+            };
+            using (DanfeSharp.Danfe d = new DanfeSharp.Danfe(model, config))
             {
                 if (logoPath.EndsWith(".pdf", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -36,13 +39,13 @@ namespace DanfeSharp.Test
                 d.Salvar(Path.Combine(OutputDirectoryName, pdfName + ".pdf"));
             }
         }
-        
+
 
         [TestMethod]
         public void LogoQuadradoJPG() => TestLogo("Logos/JPG/Quadrado.jpg");
 
         [TestMethod]
-        public void LogoHorizontalJPG() => TestLogo("Logos/JPG/Horizontal.jpg");  
+        public void LogoHorizontalJPG() => TestLogo("Logos/JPG/Horizontal.jpg");
 
         [TestMethod]
         public void LogoVerticalJPG() => TestLogo("Logos/JPG/Vertical.jpg");

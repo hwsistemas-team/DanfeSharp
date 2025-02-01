@@ -1,6 +1,5 @@
 using System;
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 using org.pdfclown.documents.contents.xObjects;
 
 namespace DanfeSharp.NFCe
@@ -9,9 +8,9 @@ namespace DanfeSharp.NFCe
     {
         Imagem _emitenteLogo;
 
-        public BlocoEmitente(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoEmitente(BlocoContexto contexto) : base(contexto)
         {
-            _emitenteLogo = new Imagem(estilo)
+            _emitenteLogo = new Imagem(contexto)
             {
                 Height = 0,
                 MaxHeightHorizontalImage = 0
@@ -21,19 +20,19 @@ namespace DanfeSharp.NFCe
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
             var lv3 = ElementoVazio.T3();
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
             var emit = ViewModel.Emitente;
 
             MainVerticalStack.Add(_emitenteLogo);
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Centro(emit.NomeFantasia, fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, emit.NomeFantasia, fn, w));
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Esquerda(emit.RazaoSocial, fr, w));
+            MainVerticalStack.Add(TextBlock.Esquerda(contexto, emit.RazaoSocial, fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(new TextoSeparado("CNPJ: " + emit.CnpjCpf, "IE: " + emit.Ie, 50, 50, fr));
+            MainVerticalStack.Add(new TextoSeparado(contexto, "CNPJ: " + emit.CnpjCpf, "IE: " + emit.Ie, 50, 50, fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Esquerda($"{emit.EnderecoLinha1} {emit.EnderecoLinha2} {emit.EnderecoLinha3}", fr, w));
+            MainVerticalStack.Add(TextBlock.Esquerda(contexto, $"{emit.EnderecoLinha1} {emit.EnderecoLinha2} {emit.EnderecoLinha3}", fr, w));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

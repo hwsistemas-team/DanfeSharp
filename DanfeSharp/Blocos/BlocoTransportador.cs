@@ -1,5 +1,4 @@
-﻿using DanfeSharp.Modelo;
-
+﻿
 namespace DanfeSharp.Blocos
 {
     internal class BlocoTransportador : BlocoBase
@@ -10,9 +9,9 @@ namespace DanfeSharp.Blocos
         public const float LarguraCampoUf = 7F * Proporcao;
         public const float LarguraFrete = 34F * Proporcao;
 
-        public BlocoTransportador(DanfeViewModel viewModel, Estilo campoEstilo) : base(viewModel, campoEstilo)
+        public BlocoTransportador(BlocoContexto contexto) : base(contexto)
         {
-            var transportadora = viewModel.Transportadora;
+            var transportadora = ViewModel.Transportadora;
 
             AdicionarLinhaCampos()
                 .ComCampo(Strings.RazaoSocial, transportadora.RazaoSocial)
@@ -40,7 +39,6 @@ namespace DanfeSharp.Blocos
                 .ComCampoNumerico("Peso Bruto", transportadora.PesoBruto, 3)
                 .ComCampoNumerico("Peso Líquido", transportadora.PesoLiquido, 3)
                 .ComLarguras(20F / 200F * 100, 0, 0, l, l, l);
-
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using org.pdfclown.documents.contents.xObjects;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.Blocos
 {
@@ -12,10 +11,9 @@ namespace DanfeSharp.Blocos
         NumeroNfSerie2 ifdNfe;
         IdentificacaoEmitente idEmitente;
 
-        public BlocoIdentificacaoEmitente(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoIdentificacaoEmitente(BlocoContexto contexto) : base(contexto)
         {
-
-            var textoConsulta = new TextoSimples(Estilo, Strings.TextoConsulta)
+            var textoConsulta = new TextoSimples(contexto, Strings.TextoConsulta)
             {
                 Height = 8,
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
@@ -23,16 +21,16 @@ namespace DanfeSharp.Blocos
                 TamanhoFonte = 9
             };
 
-            var campoChaveAcesso = new Campo("Chave de Acesso", Formatador.FormatarChaveAcesso(ViewModel.ChaveAcesso), estilo, AlinhamentoHorizontal.Centro) { Height = Constantes.CampoAltura };
-            var codigoBarras = new Barcode128C(viewModel.ChaveAcesso, Estilo) { Height = AlturaLinha1 - textoConsulta.Height - campoChaveAcesso.Height };
+            var campoChaveAcesso = new Campo(contexto, "Chave de Acesso", Formatador.FormatarChaveAcesso(ViewModel.ChaveAcesso), AlinhamentoHorizontal.Centro) { Height = Constantes.CampoAltura };
+            var codigoBarras = new Barcode128C(contexto, ViewModel.ChaveAcesso) { Height = AlturaLinha1 - textoConsulta.Height - campoChaveAcesso.Height };
 
-            var coluna3 = new VerticalStack();
+            var coluna3 = new VerticalStack(contexto);
             coluna3.Add(codigoBarras, campoChaveAcesso, textoConsulta);
 
-            ifdNfe = new NumeroNfSerie2(estilo, ViewModel);
-            idEmitente = new IdentificacaoEmitente(Estilo, ViewModel);
+            ifdNfe = new NumeroNfSerie2(contexto, ViewModel);
+            idEmitente = new IdentificacaoEmitente(contexto, ViewModel);
 
-            FlexibleLine fl = new FlexibleLine() { Height = coluna3.Height }
+            FlexibleLine fl = new FlexibleLine(contexto) { Height = coluna3.Height }
             .ComElemento(idEmitente)
             .ComElemento(ifdNfe)
             .ComElemento(coluna3)
@@ -50,7 +48,6 @@ namespace DanfeSharp.Blocos
                 .ComCampo("Inscrição Estadual do Subst. Tributário", ViewModel.Emitente.IeSt, AlinhamentoHorizontal.Centro)
                 .ComCampo("Cnpj", Formatador.FormatarCnpj(ViewModel.Emitente.CnpjCpf), AlinhamentoHorizontal.Centro)
                 .ComLargurasIguais();
-
         }
 
         public XObject Logo

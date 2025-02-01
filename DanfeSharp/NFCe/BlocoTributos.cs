@@ -1,18 +1,17 @@
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoTributos : BlocoBase
     {
-        public BlocoTributos(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoTributos(BlocoContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
-            MainVerticalStack.Add(new LinhaSolida(1));
-            MainVerticalStack.Add(TextBlock.Centro($"Tributos Totais Incidentes (Lei Federal 12.741/2012): {viewModel.CalculoImposto.ValorAproximadoTributos.FormatarMoeda()}", fr, w));
-            MainVerticalStack.Add(new LinhaSolida(1));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Tributos Totais Incidentes (Lei Federal 12.741/2012): {ViewModel.CalculoImposto.ValorAproximadoTributos.FormatarMoeda()}", fr, w));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

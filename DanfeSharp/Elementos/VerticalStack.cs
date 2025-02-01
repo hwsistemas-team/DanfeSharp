@@ -13,12 +13,12 @@ namespace DanfeSharp
     {
         public List<DrawableBase> Drawables { get; private set; }
 
-        public VerticalStack()
+        public VerticalStack(DrawableContexto contexto) : base(contexto)
         {
             Drawables = new List<DrawableBase>();
         }
 
-        public VerticalStack(float width) : this()
+        public VerticalStack(DrawableContexto contexto, float width) : this(contexto)
         {
             Width = width;
         }

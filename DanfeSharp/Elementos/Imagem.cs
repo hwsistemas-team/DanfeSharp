@@ -11,7 +11,7 @@ namespace DanfeSharp.NFCe
         public XObject XImagem { get; set; }
         public float MaxHeightHorizontalImage { get; set; }
 
-        public Imagem(Estilo estilo) : base(estilo) {}
+        public Imagem(ElementoContexto contexto) : base(contexto) {}
 
         public override bool PossuiContono => false;
 

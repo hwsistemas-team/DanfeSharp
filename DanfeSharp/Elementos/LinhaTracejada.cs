@@ -9,7 +9,7 @@ namespace DanfeSharp
         public float Margin { get; set; }
         public double[] DashPattern { get; set; }
 
-        public LinhaTracejada(float margin)
+        public LinhaTracejada(DrawableContexto contexto, float margin) : base(contexto)
         {
             Margin = margin;
         }

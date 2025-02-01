@@ -1,5 +1,4 @@
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 using org.pdfclown.documents.contents.xObjects;
 
 namespace DanfeSharp.NFCe
@@ -8,9 +7,9 @@ namespace DanfeSharp.NFCe
     {
         private Imagem _qrcodeImage;
 
-        public BlocoQrCode(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoQrCode(BlocoContexto contexto) : base(contexto)
         {
-            _qrcodeImage = new Imagem(estilo)
+            _qrcodeImage = new Imagem(contexto)
             {
                 Height  = 50f,
                 MaxHeightHorizontalImage = 40f
@@ -18,9 +17,9 @@ namespace DanfeSharp.NFCe
 
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
-            MainVerticalStack.Add(TextBlock.Centro("Consulte via leitor QR Code", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Consulte via leitor QR Code", fr, w));
             MainVerticalStack.Add(ls);
             MainVerticalStack.Add(_qrcodeImage);
         }

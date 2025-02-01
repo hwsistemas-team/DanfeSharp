@@ -10,7 +10,7 @@ namespace DanfeSharp
         public AlinhamentoVertical AlinhamentoVertical { get; set; }
         public float TamanhoFonte { get; set; }
 
-        public TextoSimples(Estilo estilo, String texto) : base(estilo)
+        public TextoSimples(ElementoContexto contexto, String texto) : base(contexto)
         {
             Texto = texto;
             AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda;
@@ -26,7 +26,7 @@ namespace DanfeSharp
             {
                 var r = BoundingBox.InflatedRetangle(0.75F);
 
-                var tb = new TextBlock(Texto, Estilo.CriarFonteRegular(TamanhoFonte));
+                var tb = new TextBlock(Contexto, Texto, Estilo.CriarFonteRegular(TamanhoFonte));
                 tb.AlinhamentoHorizontal = AlinhamentoHorizontal;
                 tb.Width = r.Width;
 

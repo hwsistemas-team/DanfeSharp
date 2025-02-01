@@ -1,22 +1,16 @@
-﻿using DanfeSharp.Modelo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace DanfeSharp.Blocos
 {
     internal class BlocoDestinatarioRemetente : BlocoBase
     {
-        public BlocoDestinatarioRemetente(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoDestinatarioRemetente(BlocoContexto contexto) : base(contexto)
         {
-            var destinatario = viewModel.Destinatario;
+            var destinatario = ViewModel.Destinatario;
 
             AdicionarLinhaCampos()
             .ComCampo(Strings.RazaoSocial, destinatario.RazaoSocial)
             .ComCampo(Strings.CnpjCpf, Formatador.FormatarCpfCnpj(destinatario.CnpjCpf), AlinhamentoHorizontal.Centro)
-            .ComCampo("Data de Emissão", viewModel.DataHoraEmissao.Formatar(), AlinhamentoHorizontal.Centro)
+            .ComCampo("Data de Emissão", ViewModel.DataHoraEmissao.Formatar(), AlinhamentoHorizontal.Centro)
             .ComLarguras(0, 45F * Proporcao, 30F * Proporcao);
 
             AdicionarLinhaCampos()

@@ -7,13 +7,13 @@ namespace DanfeSharp
     /// Campo multilinha.
     /// </summary>
     internal class CampoMultilinha : Campo
-    {   
+    {
         TextBlock _tbConteudo;
 
-        public CampoMultilinha(String cabecalho, String conteudo, Estilo estilo, AlinhamentoHorizontal alinhamentoHorizontalConteudo = AlinhamentoHorizontal.Esquerda)
-              : base(cabecalho, conteudo, estilo, alinhamentoHorizontalConteudo)
+        public CampoMultilinha(ElementoContexto contexto, String cabecalho, String conteudo, AlinhamentoHorizontal alinhamentoHorizontalConteudo = AlinhamentoHorizontal.Esquerda)
+              : base(contexto, cabecalho, conteudo, alinhamentoHorizontalConteudo)
         {
-            _tbConteudo = new TextBlock(conteudo, estilo.FonteCampoConteudo);
+            _tbConteudo = new TextBlock(contexto, conteudo, Estilo.FonteCampoConteudo);
             IsConteudoNegrito = false;
         }
 
@@ -24,7 +24,7 @@ namespace DanfeSharp
                 _tbConteudo.SetPosition(RetanguloDesenhvael.X, RetanguloDesenhvael.Y + Estilo.FonteCampoCabecalho.AlturaLinha + Estilo.PaddingInferior);
                 _tbConteudo.Draw(gfx);
             }
-        }        
+        }
 
         public override float Height
         {

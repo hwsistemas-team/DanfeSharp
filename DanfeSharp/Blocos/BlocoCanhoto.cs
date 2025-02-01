@@ -1,5 +1,4 @@
 ﻿using DanfeSharp.Elementos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.Blocos
 {
@@ -8,25 +7,25 @@ namespace DanfeSharp.Blocos
         public const float TextoRecebimentoAltura = 10;
         public const float AlturaLinha2 = 9;
 
-        public BlocoCanhoto(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoCanhoto(BlocoContexto contexto) : base(contexto)
         {
-            var textoRecebimento = new TextoSimples(estilo, viewModel.TextoRecebimento) { Height = TextoRecebimentoAltura, TamanhoFonte = 8 };
-            var nfe = new NumeroNfSerie(estilo, viewModel.NfNumero.ToString(Formatador.FormatoNumeroNF), viewModel.NfSerie.ToString()) { Height = AlturaLinha2 + TextoRecebimentoAltura, Width = 30 };
+            var textoRecebimento = new TextoSimples(contexto, ViewModel.TextoRecebimento) { Height = TextoRecebimentoAltura, TamanhoFonte = 8 };
+            var nfe = new NumeroNfSerie(contexto, ViewModel.NfNumero.ToString(Formatador.FormatoNumeroNF), ViewModel.NfSerie.ToString()) { Height = AlturaLinha2 + TextoRecebimentoAltura, Width = 30 };
 
-            var campos = new LinhaCampos(Estilo) { Height = AlturaLinha2 }
+            var campos = new LinhaCampos(contexto) { Height = AlturaLinha2 }
                .ComCampo("Data de Recebimento", null)
                .ComCampo("Identificação e assinatura do recebedor", null)
                .ComLarguras(50, 0);
 
-            var coluna1 = new VerticalStack();
+            var coluna1 = new VerticalStack(contexto);
             coluna1.Add(textoRecebimento, campos);
 
-            var linha = new FlexibleLine() {Height = coluna1.Height }
+            var linha = new FlexibleLine(contexto) {Height = coluna1.Height }
             .ComElemento(coluna1)
             .ComElemento(nfe)
             .ComLarguras(0, 16);
 
-            MainVerticalStack.Add(linha, new LinhaTracejada(2));
+            MainVerticalStack.Add(linha, new LinhaTracejada(contexto, 2));
 
         }
 

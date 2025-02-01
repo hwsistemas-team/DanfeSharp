@@ -11,7 +11,7 @@ namespace DanfeSharp.Elementos
         private double? ConteudoNumerico { get; set; }
         public int CasasDecimais { get; set; }
 
-        public CampoNumerico(string cabecalho, double? conteudoNumerico, Estilo estilo, int casasDecimais = 2) : base(cabecalho, null, estilo, AlinhamentoHorizontal.Direita)
+        public CampoNumerico(ElementoContexto contexto, string cabecalho, double? conteudoNumerico, int casasDecimais = 2) : base(contexto, cabecalho, null, AlinhamentoHorizontal.Direita)
         {
             CasasDecimais = casasDecimais;
             ConteudoNumerico = conteudoNumerico;

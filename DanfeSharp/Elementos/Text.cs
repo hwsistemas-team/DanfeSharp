@@ -15,12 +15,12 @@ namespace DanfeSharp
 
         public AlinhamentoHorizontal AlinhamentoHorizontal { get; set; }
 
-        public Text(string conteudo, Fonte fonte, AlinhamentoHorizontal alinhamentoHorizontal = AlinhamentoHorizontal.Esquerda)
-            : this(new string[] { conteudo }, fonte, alinhamentoHorizontal)
+        public Text(ElementoContexto contexto, string conteudo, Fonte fonte, AlinhamentoHorizontal alinhamentoHorizontal = AlinhamentoHorizontal.Esquerda)
+            : this(contexto, new string[] { conteudo }, fonte, alinhamentoHorizontal)
         {
         }
 
-        public Text(string[] conteudo, Fonte fonte, AlinhamentoHorizontal alinhamentoHorizontal = AlinhamentoHorizontal.Esquerda)
+        public Text(ElementoContexto contexto, string[] conteudo, Fonte fonte, AlinhamentoHorizontal alinhamentoHorizontal = AlinhamentoHorizontal.Esquerda) : base(contexto)
         {
             _conteudo = conteudo;
             _fonte = fonte;

@@ -18,8 +18,11 @@ namespace DanfeSharp
         public PointF Position => new PointF(X, Y);
         public SizeF Size => new SizeF(Width, Height);
 
-        public DrawableBase()
+        internal virtual DrawableContexto Contexto { get; private set; }
+
+        public DrawableBase(DrawableContexto contexto)
         {
+            Contexto = contexto;
         }
 
         public virtual void Draw(Gfx gfx)
@@ -37,7 +40,7 @@ namespace DanfeSharp
             Y = y;
         }
 
-        public virtual void SetPosition(PointF p) => SetPosition(p.X, p.Y); 
+        public virtual void SetPosition(PointF p) => SetPosition(p.X, p.Y);
 
         public virtual void SetSize(float w, float h)
         {

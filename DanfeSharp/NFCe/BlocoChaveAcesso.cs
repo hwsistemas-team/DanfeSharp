@@ -1,25 +1,24 @@
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoChaveAcesso : BlocoBase
     {
-        public BlocoChaveAcesso(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoChaveAcesso(BlocoContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
             var fn = Estilo.FonteNFCeNegrito3;
             var ls = ElementoVazio.T0();
-            var w = viewModel.PaginaLargura;
+            var w = Contexto.RetanguloDesenhavel.Width;
 
-            MainVerticalStack.Add(new LinhaSolida(1));
-            MainVerticalStack.Add(TextBlock.Centro("Consulte pela chave de acesso em:", fr, w));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Consulte pela chave de acesso em:", fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(viewModel.UrlChave ?? "", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, ViewModel.UrlChave ?? "", fr, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro("CHAVE DE ACESSO", fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "CHAVE DE ACESSO", fn, w));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(viewModel.ChaveAcesso, fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, ViewModel.ChaveAcesso, fn, w));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

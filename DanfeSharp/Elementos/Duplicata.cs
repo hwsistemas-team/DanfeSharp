@@ -13,11 +13,11 @@ namespace DanfeSharp
 
         private static readonly String[] Chaves = { "Número", "Vencimento:", "Valor:" };
 
-        public Duplicata(Estilo estilo, DuplicataViewModel viewModel) : base(estilo)
+        public Duplicata(ElementoContexto contexto, DuplicataViewModel viewModel) : base(contexto)
         {
             ViewModel = viewModel;
-            FonteA = estilo.CriarFonteRegular(7.5F);
-            FonteB = estilo.CriarFonteNegrito(7.5F);
+            FonteA = Estilo.CriarFonteRegular(7.5F);
+            FonteB = Estilo.CriarFonteNegrito(7.5F);
         }
 
         public override void Draw(Gfx gfx)
@@ -33,7 +33,7 @@ namespace DanfeSharp
                 gfx.DrawString(Chaves[i], r, FonteA, AlinhamentoHorizontal.Esquerda);
                 gfx.DrawString(valores[i], r, FonteB, AlinhamentoHorizontal.Direita);
                 r = r.CutTop(FonteB.AlturaLinha);
-            }    
+            }
 
         }
 

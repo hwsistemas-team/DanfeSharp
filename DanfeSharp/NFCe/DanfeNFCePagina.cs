@@ -24,8 +24,8 @@ namespace DanfeSharp.NFCe
             PdfPage = new Page(Danfe.PdfDocument);
             Danfe.PdfDocument.Pages.Add(PdfPage);
 
-            Retangulo = new RectangleF(0, 0, Danfe.ViewModel.PaginaLargura,  Danfe.ViewModel.PaginaAltura);
-            RetanguloDesenhavel = Retangulo.InflatedRetangle(Danfe.ViewModel.Margem);
+            Retangulo = Danfe.Contexto.Retangulo.Copy();
+            RetanguloDesenhavel = Danfe.Contexto.RetanguloDesenhavel.Copy();
             PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());
 
             PrimitiveComposer = new PrimitiveComposer(PdfPage);
@@ -41,7 +41,7 @@ namespace DanfeSharp.NFCe
 
         public void AjustarTamanhoPagina()
         {
-            float newHeight = (RetanguloDesenhavel.Y + Danfe.ViewModel.Margem).ToPoint();
+            float newHeight = (RetanguloDesenhavel.Y + Danfe.Contexto.Config.Margem).ToPoint();
             var pageContent = PdfPage.ToXObject(PdfPage.File.Document);
 
             var newPdfPage = new Page(PdfPage.File.Document);

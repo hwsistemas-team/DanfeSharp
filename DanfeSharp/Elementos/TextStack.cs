@@ -19,7 +19,7 @@ namespace DanfeSharp
         public AlinhamentoVertical AlinhamentoVertical { get; set; }
         public float LineHeightScale { get; set; }
 
-        public TextStack(RectangleF boundingBox)
+        public TextStack(DrawableContexto contexto, RectangleF boundingBox) : base(contexto)
         {
             SetPosition(boundingBox.Location);
             SetSize(boundingBox.Size);

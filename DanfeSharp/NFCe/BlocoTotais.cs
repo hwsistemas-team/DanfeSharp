@@ -1,24 +1,23 @@
 using System.Linq;
 using DanfeSharp.Blocos;
-using DanfeSharp.Modelo;
 
 namespace DanfeSharp.NFCe
 {
     internal class BlocoTotais : BlocoBase
     {
-        public BlocoTotais(DanfeViewModel viewModel, Estilo estilo) : base(viewModel, estilo)
+        public BlocoTotais(BlocoContexto contexto) : base(contexto)
         {
             var fn = Estilo.FonteNFCeNegrito1;
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
 
-            var qtdTotal = viewModel.Produtos.Count;
-            var valorTotal = viewModel.Produtos.Sum(x => x.ValorTotal);
+            var qtdTotal = ViewModel.Produtos.Count;
+            var valorTotal = ViewModel.Produtos.Sum(x => x.ValorTotal);
 
-            MainVerticalStack.Add(new LinhaSolida(1));
-            MainVerticalStack.Add(new TextoSeparado("Qtde. total de itens", qtdTotal.ToString(), 80, 20, fr));
+            MainVerticalStack.Add(new LinhaSolida(contexto, 1));
+            MainVerticalStack.Add(new TextoSeparado(contexto, "Qtde. total de itens", qtdTotal.ToString(), 80, 20, fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(new TextoSeparado("Valor total R$", valorTotal.Formatar(), 60, 40, fn));
+            MainVerticalStack.Add(new TextoSeparado(contexto, "Valor total R$", valorTotal.Formatar(), 60, 40, fn));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

@@ -10,7 +10,6 @@ namespace DanfeSharp
 {
     public class Danfe : IDisposable
     {
-        public DanfeViewModel ViewModel { get; private set; }
         public File File { get; private set; }
         internal Document PdfDocument { get; private set; }
 
@@ -18,7 +17,7 @@ namespace DanfeSharp
         internal BlocoIdentificacaoEmitente IdentificacaoEmitente { get; private set; }
 
         internal List<BlocoBase> _Blocos;
-        internal Estilo EstiloPadrao { get; private set; }
+        internal DanfeContext Contexto { get; private set; }
 
         internal List<DanfePagina> Paginas { get; private set; }
 
@@ -31,10 +30,8 @@ namespace DanfeSharp
 
         private org.pdfclown.documents.contents.xObjects.XObject _LogoObject = null;
 
-        public Danfe(DanfeViewModel viewModel)
+        public Danfe(DanfeViewModel viewModel, DanfeConfig config)
         {
-            ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-
             _Blocos = new List<BlocoBase>();
             File = new File();
             PdfDocument = File.Document;
@@ -45,27 +42,32 @@ namespace DanfeSharp
             _FonteNegrito = new StandardType1Font(PdfDocument, _FonteFamilia, true, false);
             _FonteItalico = new StandardType1Font(PdfDocument, _FonteFamilia, false, true);
 
-            EstiloPadrao = CriarEstilo();
+            Contexto = new DanfeContext
+            {
+                Estilo = CriarEstilo(),
+                ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel)),
+                Config = config ?? throw new ArgumentNullException(nameof(config))
+            };
 
             Paginas = new List<DanfePagina>();
             Canhoto = CriarBloco<BlocoCanhoto>();
             IdentificacaoEmitente = AdicionarBloco<BlocoIdentificacaoEmitente>();
             AdicionarBloco<BlocoDestinatarioRemetente>();
 
-            if (ViewModel.LocalRetirada != null && ViewModel.ExibirBlocoLocalRetirada)
+            if (Contexto.ViewModel.LocalRetirada != null && Contexto.Config.ExibirBlocoLocalRetirada)
                 AdicionarBloco<BlocoLocalRetirada>();
 
-            if (ViewModel.LocalEntrega != null && ViewModel.ExibirBlocoLocalEntrega)
+            if (Contexto.ViewModel.LocalEntrega != null && Contexto.Config.ExibirBlocoLocalEntrega)
                 AdicionarBloco<BlocoLocalEntrega>();
 
-            if (ViewModel.Duplicatas.Count > 0)
+            if (Contexto.ViewModel.Duplicatas.Count > 0)
                 AdicionarBloco<BlocoDuplicataFatura>();
 
-            AdicionarBloco<BlocoCalculoImposto>(ViewModel.Orientacao == Orientacao.Paisagem ? EstiloPadrao : CriarEstilo(4.75F));
+            AdicionarBloco<BlocoCalculoImposto>(Contexto.Config.Orientacao == Orientacao.Paisagem ? Contexto : Contexto.ComEstilo(CriarEstilo(4.75F)));
             AdicionarBloco<BlocoTransportador>();
-            AdicionarBloco<BlocoDadosAdicionais>(CriarEstilo(tFonteCampoConteudo: 8));
+            AdicionarBloco<BlocoDadosAdicionais>(Contexto.ComEstilo(CriarEstilo(tFonteCampoConteudo: 8)));
 
-            if(ViewModel.CalculoIssqn.Mostrar)
+            if(Contexto.ViewModel.CalculoIssqn.Mostrar)
                 AdicionarBloco<BlocoCalculoIssqn>();
 
             AdicionarMetadata();
@@ -115,7 +117,7 @@ namespace DanfeSharp
         private void AdicionarMetadata()
         {
             var info = PdfDocument.Information;
-            info[new org.pdfclown.objects.PdfName("ChaveAcesso")] = ViewModel.ChaveAcesso;
+            info[new org.pdfclown.objects.PdfName("ChaveAcesso")] = Contexto.ViewModel.ChaveAcesso;
             info[new org.pdfclown.objects.PdfName("TipoDocumento")] = "DANFE";
             info.CreationDate = DateTime.Now;
             info.Creator = String.Format("{0} {1} - {2}", "DanfeSharp", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, "https://github.com/SilverCard/DanfeSharp");
@@ -132,7 +134,7 @@ namespace DanfeSharp
             if (_FoiGerado) throw new InvalidOperationException("O Danfe já foi gerado.");
 
             IdentificacaoEmitente.Logo = _LogoObject;
-            var tabela = new TabelaProdutosServicos(ViewModel, EstiloPadrao);
+            var tabela = new TabelaProdutosServicos(Contexto);
 
             while (true)
             {
@@ -165,7 +167,7 @@ namespace DanfeSharp
             // 7. O DANFE emitido para representar NF-e cujo uso foi autorizado em ambiente de
             // homologação sempre deverá conter a frase “SEM VALOR FISCAL” no quadro “Informações
             // Complementares” ou em marca d’água destacada.
-            if (ViewModel.TipoAmbiente == 2)
+            if (Contexto.ViewModel.TipoAmbiente == 2)
                 p.DesenharAvisoHomologacao();
 
             return p;
@@ -173,12 +175,12 @@ namespace DanfeSharp
 
         internal T CriarBloco<T>() where T : BlocoBase
         {
-            return (T)Activator.CreateInstance(typeof(T), ViewModel, EstiloPadrao);
+            return (T)Activator.CreateInstance(typeof(T), Contexto);
         }
 
-        internal T CriarBloco<T>(Estilo estilo) where T : BlocoBase
+        internal T CriarBloco<T>(BlocoContexto contexto) where T : BlocoBase
         {
-            return (T)Activator.CreateInstance(typeof(T), ViewModel, estilo);
+            return (T)Activator.CreateInstance(typeof(T), contexto);
         }
 
         internal T AdicionarBloco<T>() where T: BlocoBase
@@ -188,9 +190,9 @@ namespace DanfeSharp
             return bloco;
         }
 
-        internal T AdicionarBloco<T>(Estilo estilo) where T : BlocoBase
+        internal T AdicionarBloco<T>(BlocoContexto contexto) where T : BlocoBase
         {
-            var bloco = CriarBloco<T>(estilo);
+            var bloco = CriarBloco<T>(contexto);
             _Blocos.Add(bloco);
             return bloco;
         }

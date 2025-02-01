@@ -15,7 +15,8 @@ namespace DanfeSharp.Blocos
         /// </summary>
         public const float Proporcao = 100F / 200F;
 
-        public DanfeViewModel ViewModel { get; private set; }
+        public DanfeViewModel ViewModel => Contexto.ViewModel;
+        public DanfeConfig Config => Contexto.Config;
 
         public abstract PosicaoBloco Posicao { get; }
 
@@ -31,20 +32,21 @@ namespace DanfeSharp.Blocos
 
         public virtual String Cabecalho => null;
 
-        public BlocoBase(DanfeViewModel viewModel, Estilo estilo) : base(estilo)
+        internal new BlocoContexto Contexto => (BlocoContexto)base.Contexto;
+
+        public BlocoBase(BlocoContexto contexto) : base(contexto)
         {
-            MainVerticalStack = new VerticalStack();
-            ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            MainVerticalStack = new VerticalStack(contexto);
 
             if (!String.IsNullOrWhiteSpace(Cabecalho))
             {
-                MainVerticalStack.Add(new CabecalhoBloco(estilo, Cabecalho));
+                MainVerticalStack.Add(new CabecalhoBloco(contexto, Cabecalho));
             }
         }
 
         public LinhaCampos AdicionarLinhaCampos()
         {
-            var l = new LinhaCampos(Estilo, Width);
+            var l = new LinhaCampos(Contexto, Width);
             l.Width = Width;
             l.Height = Constantes.CampoAltura;
             MainVerticalStack.Add(l);
@@ -60,6 +62,6 @@ namespace DanfeSharp.Blocos
         }
 
         public override float Height { get => MainVerticalStack.Height; set => throw new NotSupportedException(); }
-        public override bool PossuiContono => false;            
+        public override bool PossuiContono => false;
     }
 }

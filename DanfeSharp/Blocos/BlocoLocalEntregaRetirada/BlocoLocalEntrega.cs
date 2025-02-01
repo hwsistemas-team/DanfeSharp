@@ -1,11 +1,10 @@
-﻿using DanfeSharp.Modelo;
-
+﻿
 namespace DanfeSharp.Blocos
 {
     class BlocoLocalEntrega : BlocoLocalEntregaRetirada
     {
-        public BlocoLocalEntrega(DanfeViewModel viewModel, Estilo estilo) 
-            : base(viewModel, estilo, viewModel.LocalEntrega)
+        public BlocoLocalEntrega(BlocoContexto contexto)
+            : base(contexto, contexto.ViewModel.LocalEntrega)
         {
         }
 

@@ -8,7 +8,7 @@ namespace DanfeSharp
         public String NfNumero { get; private set; }
         public String NfSerie { get; private set; }
 
-        public NumeroNfSerie(Estilo estilo, String nfNumero, String nfSerie) : base(estilo)
+        public NumeroNfSerie(ElementoContexto contexto, String nfNumero, String nfSerie) : base(contexto)
         {
             NfNumero = nfNumero;
             NfSerie = nfSerie;
@@ -27,7 +27,7 @@ namespace DanfeSharp
 
             r = r.CutTop(f1.AlturaLinha);
 
-            TextStack ts = new TextStack(r)
+            TextStack ts = new TextStack(Contexto, r)
             {
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
                 AlinhamentoVertical = AlinhamentoVertical.Centro,

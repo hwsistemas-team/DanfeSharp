@@ -154,7 +154,7 @@ namespace DanfeSharp
             }
         }
 
-        public TextBlock(String text, Fonte f)
+        public TextBlock(DrawableContexto contexto, String text, Fonte f) : base(contexto)
         {
             Text = text;
             Fonte = f;
@@ -167,18 +167,18 @@ namespace DanfeSharp
 
 
 
-        public static TextBlock Centro(string text, Fonte f, float width = 0)
+        public static TextBlock Centro(DrawableContexto contexto, string text, Fonte f, float width = 0)
         {
-            return new TextBlock(text, f)
+            return new TextBlock(contexto, text, f)
             {
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
                 Width = width
             };
         }
 
-        public static TextBlock Esquerda(string text, Fonte f, float width = 0)
+        public static TextBlock Esquerda(DrawableContexto contexto, string text, Fonte f, float width = 0)
         {
-            return new TextBlock(text, f)
+            return new TextBlock(contexto, text, f)
             {
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda,
                 Width = width

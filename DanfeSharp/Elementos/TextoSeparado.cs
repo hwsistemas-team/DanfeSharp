@@ -7,11 +7,12 @@ namespace DanfeSharp
     {
         private FlexibleLine _line;
 
-        public TextoSeparado(string textoEsquerda, string textoDireta, float larguaPEsquerda, float larguraPDireita, Fonte fonte)
+        public TextoSeparado(DrawableContexto contexto, string textoEsquerda, string textoDireta, float larguaPEsquerda,
+            float larguraPDireita, Fonte fonte) : base(contexto)
         {
-            _line = new FlexibleLine() { Height = fonte.AlturaLinha }
-                .ComElemento(new TextBlock(textoEsquerda, fonte))
-                .ComElemento(new TextBlock(textoDireta, fonte) { AlinhamentoHorizontal = AlinhamentoHorizontal.Direita })
+            _line = new FlexibleLine(contexto) { Height = fonte.AlturaLinha }
+                .ComElemento(new TextBlock(contexto, textoEsquerda, fonte))
+                .ComElemento(new TextBlock(contexto, textoDireta, fonte) { AlinhamentoHorizontal = AlinhamentoHorizontal.Direita })
                 .ComLarguras(larguaPEsquerda, larguraPDireita);
         }
 

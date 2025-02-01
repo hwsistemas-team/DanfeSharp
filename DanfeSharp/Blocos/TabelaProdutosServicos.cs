@@ -10,22 +10,23 @@ namespace DanfeSharp.Blocos
     {
         public CabecalhoBloco CabecalhoBloco { get; private set; }
         public Tabela Tabela { get; private set; }
-        public DanfeViewModel ViewModel { get; private set; }
+        public DanfeViewModel ViewModel => Contexto.ViewModel;
 
-        public TabelaProdutosServicos(DanfeViewModel viewModel, Estilo estilo) : base(estilo)
+        internal new BlocoContexto Contexto => (BlocoContexto)base.Contexto;
+
+        public TabelaProdutosServicos(BlocoContexto contexto) : base(contexto)
         {
-            ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-            CabecalhoBloco = new CabecalhoBloco(estilo, "DADOS DOS PRODUTOS / SERVIÇOS");
+            CabecalhoBloco = new CabecalhoBloco(contexto, "DADOS DOS PRODUTOS / SERVIÇOS");
 
             var ad = AlinhamentoHorizontal.Direita;
             var ac = AlinhamentoHorizontal.Centro;
             var ae = AlinhamentoHorizontal.Esquerda;
 
-            Tabela = new Tabela(Estilo);
+            Tabela = new Tabela(contexto);
             String cabecalho4 = ViewModel.Emitente.CRT == "3" ? "O/CST" : "O/CSOSN";
 
-            if (ViewModel.IsRetrato)
-            { 
+            if (Config.IsRetrato)
+            {
                 Tabela
                 .ComColuna(8.5f, ac, "CÓDIGO", "PRODUTO")
                 .ComColuna(0, ae, "DESCRIÇÃO DO PRODUTO / SERVIÇO")
@@ -73,8 +74,8 @@ namespace DanfeSharp.Blocos
                     p.OCst,
                     p.Cfop.Formatar("N0"),
                     p.Unidade,
-                    p.Quantidade.Formatar(),
-                    p.ValorUnitario.Formatar(),
+                    p.Quantidade.Formatar(Config.FormatoProdutoQuantidade),
+                    p.ValorUnitario.Formatar(Config.FormatoProdutoValorUnitario),
                     p.ValorTotal.Formatar(),
                     p.BaseIcms.Formatar(),
                     p.ValorIcms.Formatar(),
@@ -97,7 +98,7 @@ namespace DanfeSharp.Blocos
 
             CabecalhoBloco.SetPosition(X, Y);
             CabecalhoBloco.Width = Width;
-            CabecalhoBloco.Draw(gfx);    
+            CabecalhoBloco.Draw(gfx);
         }
 
 

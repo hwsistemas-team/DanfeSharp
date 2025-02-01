@@ -11,7 +11,7 @@ namespace DanfeSharp
         public DanfeViewModel ViewModel { get; private set; }
         public XObject Logo { get;  set; }
 
-        public IdentificacaoEmitente(Estilo estilo, DanfeViewModel viewModel) : base(estilo)
+        public IdentificacaoEmitente(ElementoContexto contexto, DanfeViewModel viewModel) : base(contexto)
         {
             ViewModel = viewModel;
             Logo = null;
@@ -36,7 +36,7 @@ namespace DanfeSharp
             {
                 var f1 = Estilo.CriarFonteRegular(6);
                 gfx.DrawString("IDENTIFICAÇÃO DO EMITENTE", rp, f1, AlinhamentoHorizontal.Centro);
-                rp = rp.CutTop(f1.AlturaLinha);                          
+                rp = rp.CutTop(f1.AlturaLinha);
             }
             else
             {
@@ -55,26 +55,26 @@ namespace DanfeSharp
                     rLogo = new RectangleF(rp.X, rp.Y, lw, rp.Height);
                     rp = rp.CutLeft(lw);
                 }
-        
-                gfx.ShowXObject(Logo, rLogo);      
-          
+
+                gfx.ShowXObject(Logo, rLogo);
+
             }
 
             var emitente = ViewModel.Emitente;
 
             string nome = emitente.RazaoSocial;
 
-            if (ViewModel.PreferirEmitenteNomeFantasia)
+            if (Config.PreferirEmitenteNomeFantasia)
             {
                 nome = !String.IsNullOrWhiteSpace(emitente.NomeFantasia) ? emitente.NomeFantasia : emitente.RazaoSocial;
-            } 
+            }
 
-            var ts = new TextStack(rp) {  LineHeightScale = 1 }
+            var ts = new TextStack(Contexto, rp) {  LineHeightScale = 1 }
                 .AddLine(nome, f2)
                 .AddLine(emitente.EnderecoLinha1.Trim(), f3)
                 .AddLine(emitente.EnderecoLinha2.Trim(), f3)
                 .AddLine(emitente.EnderecoLinha3.Trim(), f3);
-             
+
             ts.AlinhamentoHorizontal = AlinhamentoHorizontal.Centro;
             ts.AlinhamentoVertical = AlinhamentoVertical.Centro;
             ts.Draw(gfx);
