@@ -9,7 +9,7 @@ namespace DanfeSharp.Blocos
     internal class TabelaProdutosServicos : ElementoBase
     {
         public CabecalhoBloco CabecalhoBloco { get; private set; }
-        public Tabela Tabela { get; private set; }
+        public Tabela2 Tabela { get; private set; }
         public DanfeViewModel ViewModel => Contexto.ViewModel;
 
         internal new BlocoContexto Contexto => (BlocoContexto)base.Contexto;
@@ -22,7 +22,8 @@ namespace DanfeSharp.Blocos
             var ac = AlinhamentoHorizontal.Centro;
             var ae = AlinhamentoHorizontal.Esquerda;
 
-            Tabela = new Tabela(contexto);
+            Tabela = new Tabela2(contexto);
+            Tabela.BordasCaixa = true;
             String cabecalho4 = ViewModel.Emitente.CRT == "3" ? "O/CST" : "O/CSOSN";
 
             if (Config.IsRetrato)

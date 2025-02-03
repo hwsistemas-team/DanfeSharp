@@ -14,6 +14,7 @@ namespace DanfeSharp
         public float PaddingSuperior { get; private set; }
         public float PaddingInferior { get; private set; }
         public float PaddingHorizontal { get; private set; }
+        public bool BordasCaixa { get; set;} = false;
 
         public int LinhaAtual { get; private set; }
         public float TamanhoFonteCabecalho { get; private set; }
@@ -38,7 +39,7 @@ namespace DanfeSharp
             // 7.7.7 Conteúdo dos Campos do Quadro “Dados dos Produtos/Serviços”
             // Deverá ter tamanho mínimo de seis(6) pontos, ou 17 CPP.
             FonteCorpo = Estilo.CriarFonteRegular(6F);
-            FonteCabecalho = Estilo.CriarFonteNegrito(6F);
+            FonteCabecalho = Estilo.CriarFonteRegular(5F);
         }
 
         public Tabela2 ComColuna(float larguraP, AlinhamentoHorizontal ah, params String[] cabecalho)
@@ -153,6 +154,12 @@ namespace DanfeSharp
                             tbm2 = tbh;
                     }
 
+                    if (BordasCaixa)
+                    {
+                        gfx.PrimitiveComposer.DrawLine(new PointF(x, y).ToPointMeasure(), new PointF(x, y + tbm2 + PaddingSuperior + PaddingInferior).ToPointMeasure());
+                        gfx.PrimitiveComposer.Stroke();
+                    }
+
                     x += w;
                 }
 
@@ -163,6 +170,11 @@ namespace DanfeSharp
             if (tbm + _DY + PaddingInferior + PaddingSuperior > BoundingBox.Bottom)
                 return false;
 
+            if (BordasCaixa)
+            {
+                gfx.DrawRectangle(X, _DY, Width, tbm + PaddingInferior + PaddingSuperior);
+                gfx.Stroke();
+            }
 
             foreach(var tb in tbs)
             {
@@ -210,6 +222,16 @@ namespace DanfeSharp
 
                     tb.Draw(gfx);
 
+                    if (BordasCaixa)
+                    {
+                        var prmeiraColuna = x == X;
+                        if (!prmeiraColuna)
+                        {
+                            gfx.PrimitiveComposer.DrawLine(new PointF(r.X, r.Y).ToPointMeasure(), new PointF(r.X, r.Bottom).ToPointMeasure());
+                            gfx.PrimitiveComposer.Stroke();
+                        }
+                    }
+
                     x += w;
                 }
 
@@ -231,7 +253,7 @@ namespace DanfeSharp
 
                 if (r)
                 {
-                    if (LinhaAtual > 0)
+                    if (LinhaAtual > 0 && !BordasCaixa)
                     {
                         gfx.PrimitiveComposer.BeginLocalState();
                         gfx.PrimitiveComposer.SetStrokeColor(new DeviceRGBColor(0.5, 0.5, 0.5));
