@@ -10,7 +10,6 @@ namespace DanfeSharp.NFCe
             var fr = Estilo.FonteNFCe3;
             var fn = Estilo.FonteNFCeNegrito3;
             var ls = ElementoVazio.T0();
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             var totalPag = ViewModel.Pagamentos.Sum(x => x.Valor);
 
@@ -24,7 +23,7 @@ namespace DanfeSharp.NFCe
             }
 
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Esquerda(contexto, $"(TOTAL PAGO R$ {totalPag.Formatar()})", fr, w));
+            MainVerticalStack.Add(TextBlock.Esquerda(contexto, $"(TOTAL PAGO R$ {totalPag.Formatar()})", fr));
             MainVerticalStack.Add(ls);
             MainVerticalStack.Add(new TextoSeparado(contexto, "TROCO R$", ViewModel.TrocoPagamento.Formatar(), 50, 50, fn));
         }

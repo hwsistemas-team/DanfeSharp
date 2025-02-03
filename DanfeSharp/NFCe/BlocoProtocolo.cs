@@ -8,12 +8,11 @@ namespace DanfeSharp.NFCe
         {
             var fr = Estilo.FonteNFCe2;
             var ls = ElementoVazio.T0();
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, "Protocolo de Autorização", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Protocolo de Autorização", fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, ViewModel.ProtocoloAutorizacao, fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, ViewModel.ProtocoloAutorizacao, fr));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

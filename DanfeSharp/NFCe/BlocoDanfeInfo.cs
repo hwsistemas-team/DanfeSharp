@@ -9,12 +9,11 @@ namespace DanfeSharp.NFCe
             var fn = Estilo.FonteNFCeNegrito2;
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
-            MainVerticalStack.Add(TextBlock.Centro(contexto, "DANFE NFC-e Documento Auxiliar de Nota Fiscal de Consumidor Eletrônica", fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "DANFE NFC-e Documento Auxiliar de Nota Fiscal de Consumidor Eletrônica", fn));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, "Não permite aproveitamento de crédito do ICMS", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Não permite aproveitamento de crédito do ICMS", fr));
             MainVerticalStack.Add(ls);
         }
 

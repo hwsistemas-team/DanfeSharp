@@ -95,13 +95,16 @@ namespace DanfeSharp
                 LineHeightScale = 0.9F
             };
 
-            ts.AddLine("SEM VALOR FISCAL", Danfe.Contexto.Estilo.CriarFonteRegular(48));
+            var f1 = Danfe.Contexto.Estilo.CriarFonteRegular(48);
+            var f2 = Danfe.Contexto.Estilo.CriarFonteRegular(30);
+
+            ts.AddLine("SEM VALOR FISCAL", f1);
 
             if (Danfe.Contexto.ViewModel.TipoAmbiente == 2)
-                ts.AddLine("AMBIENTE DE HOMOLOGAÇÃO", Danfe.Contexto.Estilo.CriarFonteRegular(30));
+                ts.AddLine("AMBIENTE DE HOMOLOGAÇÃO", f2);
 
             if (Danfe.Contexto.ViewModel.Cancelada)
-                ts.AddLine("CANCELADA", Danfe.Contexto.Estilo.CriarFonteRegular(30));
+                ts.AddLine("CANCELADA", f2);
 
             Gfx.PrimitiveComposer.BeginLocalState();
             Gfx.PrimitiveComposer.SetFillColor(new org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor(0.35, 0.35, 0.35));

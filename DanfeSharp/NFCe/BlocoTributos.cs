@@ -7,10 +7,9 @@ namespace DanfeSharp.NFCe
         public BlocoTributos(BlocoContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
-            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Tributos Totais Incidentes (Lei Federal 12.741/2012): {ViewModel.CalculoImposto.ValorAproximadoTributos.FormatarMoeda()}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Tributos Totais Incidentes (Lei Federal 12.741/2012): {ViewModel.CalculoImposto.ValorAproximadoTributos.FormatarMoeda()}", fr));
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
         }
 

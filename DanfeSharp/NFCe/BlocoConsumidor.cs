@@ -12,24 +12,23 @@ namespace DanfeSharp.NFCe
             var lv3 = ElementoVazio.T3();
 
             var dest = ViewModel.Destinatario;
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             if (dest == null)
             {
                 MainVerticalStack.Add(new LinhaSolida(contexto, 1));
-                MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR NÃO IDENTIFICADO", fn, w));
+                MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR NÃO IDENTIFICADO", fn));
                 return;
             }
 
             var nome = string.IsNullOrEmpty(dest.NomeFantasia) ? dest.RazaoSocial : dest.NomeFantasia;
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
-            MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR", fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "CONSUMIDOR", fn));
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, $"CPF: {dest.CnpjCpf} {nome}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"CPF: {dest.CnpjCpf} {nome}", fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, $"End.: {dest.EnderecoLinha1}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"End.: {dest.EnderecoLinha1}", fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Bairro: {dest.EnderecoLinha2} {dest.EnderecoLinha3}", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Bairro: {dest.EnderecoLinha2} {dest.EnderecoLinha3}", fr));
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
         }
 

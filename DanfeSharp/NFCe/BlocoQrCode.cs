@@ -17,9 +17,8 @@ namespace DanfeSharp.NFCe
 
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
-            var w = Contexto.RetanguloDesenhavel.Width;
 
-            MainVerticalStack.Add(TextBlock.Centro(contexto, "Consulte via leitor QR Code", fr, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, "Consulte via leitor QR Code", fr));
             MainVerticalStack.Add(ls);
             MainVerticalStack.Add(_qrcodeImage);
         }

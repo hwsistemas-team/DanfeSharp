@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageId>HWSistemas.DanfeSharp</PackageId>
-    <Version>1.0.2</Version>
+    <PackageId>HWSistemas.Danfe</PackageId>
+    <Version>1.0.8</Version>
     <Authors>hwsistemas</Authors>
     <Company>hwsitemas</Company>
     <!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->

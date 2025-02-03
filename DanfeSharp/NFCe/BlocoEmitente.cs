@@ -20,19 +20,18 @@ namespace DanfeSharp.NFCe
             var fr = Estilo.FonteNFCe3;
             var ls = ElementoVazio.T0();
             var lv3 = ElementoVazio.T3();
-            var w = Contexto.RetanguloDesenhavel.Width;
 
             var emit = ViewModel.Emitente;
 
             MainVerticalStack.Add(_emitenteLogo);
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, emit.NomeFantasia, fn, w));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, emit.NomeFantasia, fn));
             MainVerticalStack.Add(lv3);
-            MainVerticalStack.Add(TextBlock.Esquerda(contexto, emit.RazaoSocial, fr, w));
+            MainVerticalStack.Add(TextBlock.Esquerda(contexto, emit.RazaoSocial, fr));
             MainVerticalStack.Add(ls);
             MainVerticalStack.Add(new TextoSeparado(contexto, "CNPJ: " + emit.CnpjCpf, "IE: " + emit.Ie, 50, 50, fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Esquerda(contexto, $"{emit.EnderecoLinha1} {emit.EnderecoLinha2} {emit.EnderecoLinha3}", fr, w));
+            MainVerticalStack.Add(TextBlock.Esquerda(contexto, $"{emit.EnderecoLinha1} {emit.EnderecoLinha2} {emit.EnderecoLinha3}", fr));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

@@ -167,21 +167,21 @@ namespace DanfeSharp
 
 
 
-        public static TextBlock Centro(DrawableContexto contexto, string text, Fonte f, float width = 0)
+        public static TextBlock Centro(DrawableContexto contexto, string text, Fonte f)
         {
             return new TextBlock(contexto, text, f)
             {
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
-                Width = width
+                Width = contexto.RetanguloDesenhavel.Width
             };
         }
 
-        public static TextBlock Esquerda(DrawableContexto contexto, string text, Fonte f, float width = 0)
+        public static TextBlock Esquerda(DrawableContexto contexto, string text, Fonte f)
         {
             return new TextBlock(contexto, text, f)
             {
                 AlinhamentoHorizontal = AlinhamentoHorizontal.Esquerda,
-                Width = width
+                Width = contexto.RetanguloDesenhavel.Width
             };
         }
     }
