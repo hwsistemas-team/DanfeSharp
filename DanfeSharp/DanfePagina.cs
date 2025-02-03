@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using DanfeSharp.Blocos;
@@ -93,9 +93,19 @@ namespace DanfeSharp
 
         public void DesenharAvisoHomologacao()
         {
-            TextStack ts = new TextStack(Danfe.Contexto, RetanguloCorpo) { AlinhamentoVertical = AlinhamentoVertical.Centro, AlinhamentoHorizontal = AlinhamentoHorizontal.Centro, LineHeightScale = 0.9F }
-                        .AddLine("SEM VALOR FISCAL", Danfe.Contexto.Estilo.CriarFonteRegular(48))
-                        .AddLine("AMBIENTE DE HOMOLOGAÇÃO", Danfe.Contexto.Estilo.CriarFonteRegular(30));
+            var ts = new TextStack(Danfe.Contexto, RetanguloCorpo)
+            {
+                AlinhamentoVertical = AlinhamentoVertical.Centro, AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
+                LineHeightScale = 0.9F
+            };
+
+            ts.AddLine("SEM VALOR FISCAL", Danfe.Contexto.Estilo.CriarFonteRegular(48));
+
+            if (Danfe.Contexto.ViewModel.TipoAmbiente == 2)
+                ts.AddLine("AMBIENTE DE HOMOLOGAÇÃO", Danfe.Contexto.Estilo.CriarFonteRegular(30));
+
+            if (Danfe.Contexto.ViewModel.Cancelada)
+                ts.AddLine("CANCELADA", Danfe.Contexto.Estilo.CriarFonteRegular(30));
 
             Gfx.PrimitiveComposer.BeginLocalState();
             Gfx.PrimitiveComposer.SetFillColor(new org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor(0.35, 0.35, 0.35));

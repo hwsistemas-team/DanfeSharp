@@ -139,6 +139,8 @@ namespace DanfeSharp.Modelo
         /// </summary>
         public List<String> NotasFiscaisReferenciadas { get; set; }
 
+        public bool Cancelada { get; set; }
+
         public string QrCode { get; set; }
 
         public string UrlChave { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DanfeSharp.Blocos;
 using org.pdfclown.documents;
@@ -167,7 +167,7 @@ namespace DanfeSharp
             // 7. O DANFE emitido para representar NF-e cujo uso foi autorizado em ambiente de
             // homologação sempre deverá conter a frase “SEM VALOR FISCAL” no quadro “Informações
             // Complementares” ou em marca d’água destacada.
-            if (Contexto.ViewModel.TipoAmbiente == 2)
+            if (Contexto.ViewModel.TipoAmbiente == 2 || Contexto.ViewModel.Cancelada)
                 p.DesenharAvisoHomologacao();
 
             return p;
