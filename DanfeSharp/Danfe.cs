@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DanfeSharp.Blocos;
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.fonts;
 using org.pdfclown.files;
 using DanfeSharp.Modelo;
+using System.Drawing;
 
 namespace DanfeSharp
 {
@@ -48,6 +49,13 @@ namespace DanfeSharp
                 ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel)),
                 Config = config ?? throw new ArgumentNullException(nameof(config))
             };
+
+            if (Contexto.Config.Orientacao == Orientacao.Retrato)
+                Contexto.Retangulo = new RectangleF(0, 0, Constantes.A4Largura, Constantes.A4Altura);
+            else
+                Contexto.Retangulo = new RectangleF(0, 0, Constantes.A4Altura, Constantes.A4Largura);
+
+            Contexto.RetanguloDesenhavel = Contexto.Retangulo.InflatedRetangle(Contexto.Config.Margem);
 
             Paginas = new List<DanfePagina>();
             Canhoto = CriarBloco<BlocoCanhoto>();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using DanfeSharp.Blocos;
@@ -29,12 +29,8 @@ namespace DanfeSharp
             PrimitiveComposer = new PrimitiveComposer(PdfPage);
             Gfx = new Gfx(PrimitiveComposer);
 
-            if (Danfe.Contexto.Config.Orientacao == Orientacao.Retrato)
-                Retangulo = new RectangleF(0, 0, Constantes.A4Largura, Constantes.A4Altura);
-            else
-                Retangulo = new RectangleF(0, 0, Constantes.A4Altura, Constantes.A4Largura);
-
-            RetanguloDesenhavel = Retangulo.InflatedRetangle(Danfe.Contexto.Config.Margem);
+            Retangulo = Danfe.Contexto.Retangulo.Copy();
+            RetanguloDesenhavel = Danfe.Contexto.RetanguloDesenhavel.Copy();
             RetanguloCreditos = new RectangleF(RetanguloDesenhavel.X, RetanguloDesenhavel.Bottom + Danfe.Contexto.Estilo.PaddingSuperior, RetanguloDesenhavel.Width, Retangulo.Height - RetanguloDesenhavel.Height - Danfe.Contexto.Estilo.PaddingSuperior);
             PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());
         }

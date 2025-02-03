@@ -16,7 +16,6 @@ namespace DanfeSharp.Blocos
         public const float Proporcao = 100F / 200F;
 
         public DanfeViewModel ViewModel => Contexto.ViewModel;
-        public DanfeConfig Config => Contexto.Config;
 
         public abstract PosicaoBloco Posicao { get; }
 
