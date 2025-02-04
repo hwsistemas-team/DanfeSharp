@@ -2,9 +2,9 @@
 
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoDuplicataFatura : BlocoBase
+    internal class BlocoDuplicatas : BlocoBase
     {
-        public BlocoDuplicataFatura(BlocoContexto contexto) : base(contexto)
+        public BlocoDuplicatas(BlocoContexto contexto) : base(contexto)
         {
             var de = ViewModel.Duplicatas.Select(x => new Duplicata(contexto, x)).ToList();
             var eh = de.First().Height;

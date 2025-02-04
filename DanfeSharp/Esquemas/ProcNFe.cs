@@ -355,9 +355,9 @@ namespace DanfeSharp.Esquemas.NFe
     public partial class Fatura
     {
         public string nFat { get; set; }
-        public string vOrig { get; set; }
-        public string vDesc { get; set; }
-        public string vLiq { get; set; }
+        public double? vOrig { get; set; }
+        public double? vDesc { get; set; }
+        public double? vLiq { get; set; }
     }
 
 

@@ -283,7 +283,7 @@ namespace DanfeSharp.Modelo
                 model.Produtos.Add(produto);
             }
 
-            if (infNfe.cobr != null)
+            if (infNfe.cobr?.dup != null)
             {
                 foreach (var item in infNfe.cobr.dup)
                 {
@@ -294,6 +294,18 @@ namespace DanfeSharp.Modelo
 
                     model.Duplicatas.Add(duplicata);
                 }
+            }
+
+            if (infNfe.cobr?.fat != null)
+            {
+                var fat = infNfe.cobr?.fat;
+                var fatura = new FaturaViewModel();
+                fatura.Numero = fat.nFat;
+                fatura.ValorOriginal = fat.vOrig.GetValueOrDefault();
+                fatura.ValorDesconto = fat.vDesc.GetValueOrDefault();
+                fatura.ValorLiquido = fat.vLiq.GetValueOrDefault();
+
+                model.Fatura = fatura;
             }
 
             if (infNfe.pag != null)

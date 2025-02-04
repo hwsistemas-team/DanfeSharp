@@ -91,9 +91,14 @@ namespace DanfeSharp.Modelo
         public String ProtocoloAutorizacao { get; set; }
 
         /// <summary>
-        /// Faturas da Nota Fiscal
+        /// Duplicatas da Nota Fiscal
         /// </summary>
         public List<DuplicataViewModel> Duplicatas { get; set; }
+
+        /// <summary>
+        /// Fatura da Nota Fiscal
+        /// </summary>
+        public FaturaViewModel Fatura { get; set; }
 
         public Double TrocoPagamento { get; set; }
 
