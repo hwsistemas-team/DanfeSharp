@@ -16,6 +16,7 @@ namespace DanfeSharp
         public bool ExibirPisConfins { get; set; } = true;
         public bool ExibirBlocoLocalEntrega { get; set; } = true;
         public bool ExibirBlocoLocalRetirada { get; set; } = true;
+        public bool ExibirBlocoFatura { get; set; } = true;
         public bool PreferirEmitenteNomeFantasia { get; set; } = true;
 
         public bool NFCeItensEm2Linhas { get; set; } = false;

@@ -68,7 +68,7 @@ namespace DanfeSharp
             if (Contexto.ViewModel.LocalEntrega != null && Contexto.Config.ExibirBlocoLocalEntrega)
                 AdicionarBloco<BlocoLocalEntrega>();
 
-            if (!String.IsNullOrEmpty(Contexto.ViewModel.Fatura?.Numero))
+            if (!String.IsNullOrEmpty(Contexto.ViewModel.Fatura?.Numero) && Contexto.Config.ExibirBlocoFatura)
                 AdicionarBloco<BlocoFatura>();
 
             if (Contexto.ViewModel.Duplicatas.Count > 0)
