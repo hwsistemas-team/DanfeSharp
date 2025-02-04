@@ -14,7 +14,7 @@ namespace DanfeSharp.NFCe
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
             MainVerticalStack.Add(TextBlock.Centro(contexto, "EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO - SEM VALOR FISCAL", fn));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Número: {ViewModel.NfNumero} Série: {ViewModel.NfSerie} Emissão: {ViewModel.DataHoraEmissao.FormatarDataHora()}", fr));
+            MainVerticalStack.Add(TextBlock.Centro(contexto, $"Número: {ViewModel.NfNumero.ToString().PadLeft(9, '0')} Série: {ViewModel.NfSerie.ToString().PadLeft(3, '0')} Emissão: {ViewModel.DataHoraEmissao.FormatarDataHora()}", fr));
             MainVerticalStack.Add(lv3);
         }
 
