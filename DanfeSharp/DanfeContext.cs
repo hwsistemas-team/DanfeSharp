@@ -1,6 +1,6 @@
 namespace DanfeSharp
 {
-    internal class DanfeContext : BlocoContexto
+    internal class DanfeContext : BlocoNFeContexto
     {
     }
 }

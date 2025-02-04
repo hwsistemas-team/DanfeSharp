@@ -3,11 +3,11 @@ using DanfeSharp.Modelo;
 
 namespace DanfeSharp.Blocos
 {
-    abstract class BlocoLocalEntregaRetirada : BlocoBase
+    abstract class BlocoLocalEntregaRetirada : BlocoNFeBase
     {
         public LocalEntregaRetiradaViewModel Model { get; private set; }
 
-        public BlocoLocalEntregaRetirada(BlocoContexto contexto, LocalEntregaRetiradaViewModel localModel) : base(contexto)
+        public BlocoLocalEntregaRetirada(BlocoNFeContexto contexto, LocalEntregaRetiradaViewModel localModel) : base(contexto)
         {
             Model = localModel ?? throw new ArgumentNullException(nameof(localModel));
 

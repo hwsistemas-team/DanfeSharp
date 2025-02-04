@@ -1,9 +1,9 @@
 ﻿
 namespace DanfeSharp.Blocos
 {
-    class BlocoCalculoImposto : BlocoBase
+    class BlocoCalculoImposto : BlocoNFeBase
     {
-        public BlocoCalculoImposto(BlocoContexto contexto) : base(contexto)
+        public BlocoCalculoImposto(BlocoNFeContexto contexto) : base(contexto)
         {
             var m = ViewModel.CalculoImposto;
 

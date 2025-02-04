@@ -1,7 +1,7 @@
 ﻿
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoTransportador : BlocoBase
+    internal class BlocoTransportador : BlocoNFeBase
     {
         public const float LarguraCampoPlacaVeiculo = 22F * Proporcao;
         public const float LarguraCampoCodigoAntt = 30F * Proporcao;
@@ -9,7 +9,7 @@ namespace DanfeSharp.Blocos
         public const float LarguraCampoUf = 7F * Proporcao;
         public const float LarguraFrete = 34F * Proporcao;
 
-        public BlocoTransportador(BlocoContexto contexto) : base(contexto)
+        public BlocoTransportador(BlocoNFeContexto contexto) : base(contexto)
         {
             var transportadora = ViewModel.Transportadora;
 

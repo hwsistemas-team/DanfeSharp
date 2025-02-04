@@ -4,9 +4,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoProdutos : BlocoBase
+    internal class BlocoProdutos : BlocoNFeBase
     {
-        public BlocoProdutos(BlocoContexto contexto) : base(contexto)
+        public BlocoProdutos(BlocoNFeContexto contexto) : base(contexto)
         {
             var ae = AlinhamentoHorizontal.Esquerda;
             var ac = AlinhamentoHorizontal.Centro;

@@ -3,11 +3,11 @@ using org.pdfclown.documents.contents.xObjects;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoQrCode : BlocoBase
+    internal class BlocoQrCode : BlocoNFeBase
     {
         private Imagem _qrcodeImage;
 
-        public BlocoQrCode(BlocoContexto contexto) : base(contexto)
+        public BlocoQrCode(BlocoNFeContexto contexto) : base(contexto)
         {
             _qrcodeImage = new Imagem(contexto)
             {

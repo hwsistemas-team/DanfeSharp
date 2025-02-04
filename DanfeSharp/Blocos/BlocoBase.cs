@@ -8,14 +8,14 @@ namespace DanfeSharp.Blocos
     /// <summary>
     /// Define um bloco básico do DANFE.
     /// </summary>
-    internal abstract class BlocoBase : ElementoBase
+    internal abstract class BlocoBase<TViewModel> : ElementoBase
     {
         /// <summary>
         /// Constante de proporção dos campos para o formato retrato A4, porcentagem dividida pela largura desenhável.
         /// </summary>
         public const float Proporcao = 100F / 200F;
 
-        public DanfeViewModel ViewModel => Contexto.ViewModel;
+        public TViewModel ViewModel => Contexto.ViewModel;
 
         public abstract PosicaoBloco Posicao { get; }
 
@@ -31,9 +31,9 @@ namespace DanfeSharp.Blocos
 
         public virtual String Cabecalho => null;
 
-        internal new BlocoContexto Contexto => (BlocoContexto)base.Contexto;
+        internal new BlocoContextoBase<TViewModel> Contexto => (BlocoContextoBase<TViewModel>)base.Contexto;
 
-        public BlocoBase(BlocoContexto contexto) : base(contexto)
+        public BlocoBase(BlocoContextoBase<TViewModel> contexto) : base(contexto)
         {
             MainVerticalStack = new VerticalStack(contexto);
 
@@ -62,5 +62,12 @@ namespace DanfeSharp.Blocos
 
         public override float Height { get => MainVerticalStack.Height; set => throw new NotSupportedException(); }
         public override bool PossuiContono => false;
+    }
+
+    internal abstract class BlocoNFeBase : BlocoBase<DanfeViewModel>
+    {
+        protected BlocoNFeBase(BlocoNFeContexto contexto) : base(contexto)
+        {
+        }
     }
 }

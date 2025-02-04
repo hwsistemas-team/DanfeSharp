@@ -12,9 +12,9 @@ namespace DanfeSharp.Blocos
         public Tabela2 Tabela { get; private set; }
         public DanfeViewModel ViewModel => Contexto.ViewModel;
 
-        internal new BlocoContexto Contexto => (BlocoContexto)base.Contexto;
+        internal new BlocoNFeContexto Contexto => (BlocoNFeContexto)base.Contexto;
 
-        public TabelaProdutosServicos(BlocoContexto contexto) : base(contexto)
+        public TabelaProdutosServicos(BlocoNFeContexto contexto) : base(contexto)
         {
             CabecalhoBloco = new CabecalhoBloco(contexto, "DADOS DOS PRODUTOS / SERVIÇOS");
 

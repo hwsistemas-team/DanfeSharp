@@ -3,9 +3,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoPagamentos : BlocoBase
+    internal class BlocoPagamentos : BlocoNFeBase
     {
-        public BlocoPagamentos(BlocoContexto contexto) : base(contexto)
+        public BlocoPagamentos(BlocoNFeContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
             var fn = Estilo.FonteNFCeNegrito3;

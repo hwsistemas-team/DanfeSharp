@@ -1,9 +1,9 @@
 ﻿
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoDestinatarioRemetente : BlocoBase
+    internal class BlocoDestinatarioRemetente : BlocoNFeBase
     {
-        public BlocoDestinatarioRemetente(BlocoContexto contexto) : base(contexto)
+        public BlocoDestinatarioRemetente(BlocoNFeContexto contexto) : base(contexto)
         {
             var destinatario = ViewModel.Destinatario;
 

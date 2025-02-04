@@ -3,9 +3,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoTotais : BlocoBase
+    internal class BlocoTotais : BlocoNFeBase
     {
-        public BlocoTotais(BlocoContexto contexto) : base(contexto)
+        public BlocoTotais(BlocoNFeContexto contexto) : base(contexto)
         {
             var fn = Estilo.FonteNFCeNegrito1;
             var fr = Estilo.FonteNFCe3;

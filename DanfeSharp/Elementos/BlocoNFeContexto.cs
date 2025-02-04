@@ -1,13 +1,12 @@
+using DanfeSharp.Modelo;
 
 namespace DanfeSharp
 {
-    internal class BlocoContextoBase<TViewModel> : ElementoContexto
+    internal class BlocoNFeContexto: BlocoContextoBase<DanfeViewModel>
     {
-        public TViewModel ViewModel { get; set; }
-
-        public virtual BlocoContextoBase<TViewModel> ComEstilo(Estilo estilo)
+        public new BlocoNFeContexto ComEstilo(Estilo estilo)
         {
-            return new BlocoContextoBase<TViewModel>
+            return new BlocoNFeContexto
             {
                 ViewModel = ViewModel,
                 Config = Config,

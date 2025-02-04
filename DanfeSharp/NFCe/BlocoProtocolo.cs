@@ -2,9 +2,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoProtocolo : BlocoBase
+    internal class BlocoProtocolo : BlocoNFeBase
     {
-        public BlocoProtocolo(BlocoContexto contexto) : base(contexto)
+        public BlocoProtocolo(BlocoNFeContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe2;
             var ls = ElementoVazio.T0();

@@ -2,12 +2,12 @@
 
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoCanhoto : BlocoBase
+    internal class BlocoCanhoto : BlocoNFeBase
     {
         public const float TextoRecebimentoAltura = 10;
         public const float AlturaLinha2 = 9;
 
-        public BlocoCanhoto(BlocoContexto contexto) : base(contexto)
+        public BlocoCanhoto(BlocoNFeContexto contexto) : base(contexto)
         {
             var textoRecebimento = new TextoSimples(contexto, ViewModel.TextoRecebimento) { Height = TextoRecebimentoAltura, TamanhoFonte = 8 };
             var nfe = new NumeroNfSerie(contexto, ViewModel.NfNumero.ToString(Formatador.FormatoNumeroNF), ViewModel.NfSerie.ToString()) { Height = AlturaLinha2 + TextoRecebimentoAltura, Width = 30 };

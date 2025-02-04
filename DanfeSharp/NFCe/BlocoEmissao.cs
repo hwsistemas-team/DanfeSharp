@@ -2,9 +2,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoEmissao : BlocoBase
+    internal class BlocoEmissao : BlocoNFeBase
     {
-        public BlocoEmissao(BlocoContexto contexto) : base(contexto)
+        public BlocoEmissao(BlocoNFeContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
             var fn = Estilo.FonteNFCeNegrito3;

@@ -1,9 +1,9 @@
 ﻿
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoFatura : BlocoBase
+    internal class BlocoFatura : BlocoNFeBase
     {
-        public BlocoFatura(BlocoContexto contexto) : base(contexto)
+        public BlocoFatura(BlocoNFeContexto contexto) : base(contexto)
         {
             var fat = ViewModel.Fatura;
 

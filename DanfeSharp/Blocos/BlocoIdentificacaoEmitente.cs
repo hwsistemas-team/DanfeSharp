@@ -3,7 +3,7 @@ using org.pdfclown.documents.contents.xObjects;
 
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoIdentificacaoEmitente : BlocoBase
+    internal class BlocoIdentificacaoEmitente : BlocoNFeBase
     {
         public const float LarguraCampoChaveNFe = 93F;
         public const float AlturaLinha1 = 30;
@@ -11,7 +11,7 @@ namespace DanfeSharp.Blocos
         NumeroNfSerie2 ifdNfe;
         IdentificacaoEmitente idEmitente;
 
-        public BlocoIdentificacaoEmitente(BlocoContexto contexto) : base(contexto)
+        public BlocoIdentificacaoEmitente(BlocoNFeContexto contexto) : base(contexto)
         {
             var textoConsulta = new TextoSimples(contexto, Strings.TextoConsulta)
             {

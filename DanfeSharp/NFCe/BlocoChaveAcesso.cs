@@ -2,9 +2,9 @@ using DanfeSharp.Blocos;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoChaveAcesso : BlocoBase
+    internal class BlocoChaveAcesso : BlocoNFeBase
     {
-        public BlocoChaveAcesso(BlocoContexto contexto) : base(contexto)
+        public BlocoChaveAcesso(BlocoNFeContexto contexto) : base(contexto)
         {
             var fr = Estilo.FonteNFCe3;
             var fn = Estilo.FonteNFCeNegrito3;

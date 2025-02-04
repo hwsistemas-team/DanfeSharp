@@ -17,7 +17,7 @@ namespace DanfeSharp
         internal BlocoCanhoto Canhoto { get; private set; }
         internal BlocoIdentificacaoEmitente IdentificacaoEmitente { get; private set; }
 
-        internal List<BlocoBase> _Blocos;
+        internal List<BlocoNFeBase> _Blocos;
         internal DanfeContext Contexto { get; private set; }
 
         internal List<DanfePagina> Paginas { get; private set; }
@@ -33,7 +33,7 @@ namespace DanfeSharp
 
         public Danfe(DanfeViewModel viewModel, DanfeConfig config)
         {
-            _Blocos = new List<BlocoBase>();
+            _Blocos = new List<BlocoNFeBase>();
             File = new File();
             PdfDocument = File.Document;
 
@@ -184,31 +184,31 @@ namespace DanfeSharp
             return p;
         }
 
-        internal T CriarBloco<T>() where T : BlocoBase
+        internal T CriarBloco<T>() where T : BlocoNFeBase
         {
             return (T)Activator.CreateInstance(typeof(T), Contexto);
         }
 
-        internal T CriarBloco<T>(BlocoContexto contexto) where T : BlocoBase
+        internal T CriarBloco<T>(BlocoNFeContexto contexto) where T : BlocoNFeBase
         {
             return (T)Activator.CreateInstance(typeof(T), contexto);
         }
 
-        internal T AdicionarBloco<T>() where T: BlocoBase
+        internal T AdicionarBloco<T>() where T: BlocoNFeBase
         {
             var bloco = CriarBloco<T>();
             _Blocos.Add(bloco);
             return bloco;
         }
 
-        internal T AdicionarBloco<T>(BlocoContexto contexto) where T : BlocoBase
+        internal T AdicionarBloco<T>(BlocoNFeContexto contexto) where T : BlocoNFeBase
         {
             var bloco = CriarBloco<T>(contexto);
             _Blocos.Add(bloco);
             return bloco;
         }
 
-        internal void AdicionarBloco(BlocoBase bloco)
+        internal void AdicionarBloco(BlocoNFeBase bloco)
         {
             _Blocos.Add(bloco);
         }

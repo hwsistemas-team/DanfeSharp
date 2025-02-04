@@ -1,9 +1,9 @@
 ﻿
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoCalculoIssqn : BlocoBase
+    internal class BlocoCalculoIssqn : BlocoNFeBase
     {
-        public BlocoCalculoIssqn(BlocoContexto contexto) : base(contexto)
+        public BlocoCalculoIssqn(BlocoNFeContexto contexto) : base(contexto)
         {
             var m = ViewModel.CalculoIssqn;
 

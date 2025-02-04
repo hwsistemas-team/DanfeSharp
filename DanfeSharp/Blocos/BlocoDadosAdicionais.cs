@@ -2,7 +2,7 @@
 
 namespace DanfeSharp.Blocos
 {
-    internal class BlocoDadosAdicionais : BlocoBase
+    internal class BlocoDadosAdicionais : BlocoNFeBase
     {
         public const float AlturaMinima = 25;
         private CampoMultilinha _cInfComplementares;
@@ -10,7 +10,7 @@ namespace DanfeSharp.Blocos
         private Campo _cReservadoFisco;
         public const float InfComplementaresLarguraPorcentagem = 75;
 
-        public BlocoDadosAdicionais(BlocoContexto contexto) : base(contexto)
+        public BlocoDadosAdicionais(BlocoNFeContexto contexto) : base(contexto)
         {
             _cInfComplementares = new CampoMultilinha(contexto, "Informações Complementares", ViewModel.TextoAdicional());
             _cReservadoFisco = new CampoMultilinha(contexto, "Reservado ao fisco", ViewModel.TextoAdicionalFisco());

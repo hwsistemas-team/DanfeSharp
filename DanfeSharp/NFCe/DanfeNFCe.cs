@@ -17,7 +17,7 @@ namespace DanfeSharp.NFCe
         internal BlocoEmitente BlocoEmitenteLogo { get; private set; }
         internal BlocoQrCode BlocoQrCode { get; private set; }
 
-        internal List<BlocoBase> _Blocos;
+        internal List<BlocoNFeBase> _Blocos;
         internal DanfeContext Contexto { get; private set; }
 
         internal List<DanfeNFCePagina> Paginas { get; private set; }
@@ -34,7 +34,7 @@ namespace DanfeSharp.NFCe
 
         public DanfeNFCe(DanfeViewModel viewModel, DanfeConfig config)
         {
-            _Blocos = new List<BlocoBase>();
+            _Blocos = new List<BlocoNFeBase>();
             File = new File();
             PdfDocument = File.Document;
 
@@ -168,13 +168,13 @@ namespace DanfeSharp.NFCe
             return new Estilo(_FonteRegular, _FonteNegrito, _FonteItalico, tFonteCampoCabecalho, tFonteCampoConteudo);
         }
 
-        internal T CriarBloco<T>() where T : BlocoBase
+        internal T CriarBloco<T>() where T : BlocoNFeBase
         {
             var bloco = (T)Activator.CreateInstance(typeof(T), Contexto);
             return bloco;
         }
 
-        internal T AdicionarBloco<T>() where T: BlocoBase
+        internal T AdicionarBloco<T>() where T: BlocoNFeBase
         {
             var bloco = CriarBloco<T>();
             _Blocos.Add(bloco);

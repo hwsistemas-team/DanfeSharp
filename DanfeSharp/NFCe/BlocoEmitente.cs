@@ -4,11 +4,11 @@ using org.pdfclown.documents.contents.xObjects;
 
 namespace DanfeSharp.NFCe
 {
-    internal class BlocoEmitente : BlocoBase
+    internal class BlocoEmitente : BlocoNFeBase
     {
         Imagem _emitenteLogo;
 
-        public BlocoEmitente(BlocoContexto contexto) : base(contexto)
+        public BlocoEmitente(BlocoNFeContexto contexto) : base(contexto)
         {
             _emitenteLogo = new Imagem(contexto)
             {

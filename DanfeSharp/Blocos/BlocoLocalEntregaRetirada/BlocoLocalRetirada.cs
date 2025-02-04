@@ -3,7 +3,7 @@ namespace DanfeSharp.Blocos
 {
     class BlocoLocalRetirada : BlocoLocalEntregaRetirada
     {
-        public BlocoLocalRetirada(BlocoContexto contexto)
+        public BlocoLocalRetirada(BlocoNFeContexto contexto)
             : base(contexto, contexto.ViewModel.LocalRetirada)
         {
         }
