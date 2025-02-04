@@ -21,7 +21,7 @@ namespace DanfeSharp
             Cabecalho = cabecalho;
             this.Conteudo = conteudo;
             AlinhamentoHorizontalConteudo = alinhamentoHorizontalConteudo;
-            IsConteudoNegrito = true;
+            IsConteudoNegrito = false;
             Height = Constantes.CampoAltura;
         }
 

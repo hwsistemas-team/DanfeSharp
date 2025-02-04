@@ -45,7 +45,7 @@ namespace DanfeSharp
             FonteCampoCabecalho = CriarFonteRegular(tamanhoFonteCampoCabecalho);
             FonteCampoConteudo = CriarFonteRegular(tamanhoFonteConteudo);
             FonteCampoConteudoNegrito = CriarFonteNegrito(tamanhoFonteConteudo);
-            FonteBlocoCabecalho = CriarFonteRegular(7);
+            FonteBlocoCabecalho = CriarFonteNegrito(7);
             FonteNumeroFolhas = CriarFonteNegrito(10F);
             FonteTamanhoMinimo = 5.75F;
 
