@@ -116,6 +116,7 @@ namespace DanfeSharp
             _DY1 = _DY;
 
             List<TextBlock[]> tbs = new List<TextBlock[]>();
+            var tbms = new List<float>();
             float tbm = 0;
 
             for(int ci = 0; ci < Colunas.Count; ci++)
@@ -134,10 +135,10 @@ namespace DanfeSharp
                     var v = Linhas[lna][i];
 
                     float w = Width * c.PorcentagemLargura / 100F;
+                    var width =  w - 2F * Estilo.PaddingHorizontal;
 
                     if (!String.IsNullOrWhiteSpace(v))
                     {
-                        var width =  w - 2F * Estilo.PaddingHorizontal;
                         v = TextOverflow.TratarTexto(v, FonteCorpo, width, addElipses: false);
 
                         tb[i] = new TextBlock(Contexto, v, FonteCorpo)
@@ -153,11 +154,15 @@ namespace DanfeSharp
                         if (tbh > tbm2)
                             tbm2 = tbh;
                     }
-
-                    if (BordasCaixa)
+                    else
                     {
-                        gfx.PrimitiveComposer.DrawLine(new PointF(x, y).ToPointMeasure(), new PointF(x, y + tbm2 + PaddingSuperior + PaddingInferior).ToPointMeasure());
-                        gfx.PrimitiveComposer.Stroke();
+                        tb[i] = new TextBlock(Contexto, String.Empty, FonteCorpo)
+                        {
+                            Width = width,
+                            X = x + PaddingHorizontal,
+                            Y = y + PaddingSuperior,
+                            AlinhamentoHorizontal = c.AlinhamentoHorizontal
+                        };
                     }
 
                     x += w;
@@ -165,6 +170,7 @@ namespace DanfeSharp
 
                 y += tbm2;
                 tbm += tbm2;
+                tbms.Add(tbm2);
             }
 
             if (tbm + _DY + PaddingInferior + PaddingSuperior > BoundingBox.Bottom)
@@ -176,10 +182,20 @@ namespace DanfeSharp
                 gfx.Stroke();
             }
 
-            foreach(var tb in tbs)
+            for(int i = 0; i < tbs.Count; i++)
             {
-                foreach(var t in tb)
+                var bordaHeight = tbms[i] + PaddingInferior + PaddingSuperior;
+
+                foreach(var t in tbs[i])
                 {
+                    if (BordasCaixa)
+                    {
+                        var bx = t.X - PaddingHorizontal;
+                        var by = t.Y - PaddingSuperior;
+                        gfx.PrimitiveComposer.DrawLine(new PointF(bx, by).ToPointMeasure(), new PointF(bx, by + bordaHeight).ToPointMeasure());
+                        gfx.PrimitiveComposer.Stroke();
+                    }
+
                     t?.Draw(gfx);
                 }
             }
