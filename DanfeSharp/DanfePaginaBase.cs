@@ -44,7 +44,7 @@ namespace DanfeSharp
             Gfx.DrawString("Impresso com DanfeSharp", RetanguloCreditos, Danfe.Contexto.Estilo.CriarFonteItalico(6), AlinhamentoHorizontal.Direita);
         }
 
-        public void DesenharBlocos(bool isPrimeirapagina = false)
+        public void DesenharBlocos(bool isPrimeirapagina = false, Action<TBloco> onDraw = null)
         {
             var blocos = isPrimeirapagina ? Danfe.Blocos : Danfe.Blocos.Where(x => x.VisivelSomentePrimeiraPagina == false);
 
@@ -64,6 +64,8 @@ namespace DanfeSharp
                 }
 
                 bloco.Draw(Gfx);
+
+                onDraw?.Invoke(bloco);
             }
 
             RetanguloCorpo = RetanguloDesenhavel;

@@ -15,6 +15,7 @@ namespace DanfeSharp
     internal class DanfePagina
     {
         internal DanfePaginaCtrl Ctrl;
+        internal RectangleF RetanguloNumeroFolhas;
 
         private DanfeContext Contexto => Ctrl.Danfe.Contexto;
         private DanfeViewModel ViewModel => Contexto.ViewModel;
@@ -71,7 +72,7 @@ namespace DanfeSharp
             if (total <= 0) throw new ArgumentOutOfRangeException(nameof(n));
             if (n > total) throw new ArgumentOutOfRangeException("O número da página atual deve ser menor que o total.");
 
-            Gfx.DrawString($"Folha {n}/{total}", Ctrl.Danfe.IdentificacaoEmitente.RetanguloNumeroFolhas, Contexto.Estilo.FonteNumeroFolhas, AlinhamentoHorizontal.Centro);
+            Gfx.DrawString($"Folha {n}/{total}", RetanguloNumeroFolhas, Contexto.Estilo.FonteNumeroFolhas, AlinhamentoHorizontal.Centro);
             Gfx.Flush();
         }
 
@@ -110,7 +111,11 @@ namespace DanfeSharp
         {
             if (isPrimeirapagina && Config.QuantidadeCanhotos > 0) DesenharCanhoto();
 
-            Ctrl.DesenharBlocos(isPrimeirapagina);
+            Ctrl.DesenharBlocos(isPrimeirapagina, bloco =>
+            {
+                if (bloco is BlocoIdentificacaoEmitente blocoEmitente)
+                    RetanguloNumeroFolhas = blocoEmitente.RetanguloNumeroFolhas;
+            });
         }
     }
 }
