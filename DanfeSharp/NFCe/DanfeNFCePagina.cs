@@ -1,84 +1,57 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using DanfeSharp.Blocos;
 using DanfeSharp.Graphics;
+using DanfeSharp.Modelo;
 using org.pdfclown.documents;
 using org.pdfclown.documents.contents.composition;
 
 namespace DanfeSharp.NFCe
 {
+    internal class DanfeNFCePaginaCtrl : DanfePaginaBase<DanfeNFCeCtrl, DanfeContext, BlocoNFeBase, DanfeViewModel>
+    {
+        public DanfeNFCePaginaCtrl(DanfeNFCeCtrl ctrl) : base(ctrl) { }
+    }
+
     internal class DanfeNFCePagina
     {
-        public DanfeNFCe Danfe { get; private set; }
-        public Page PdfPage { get; private set; }
-        public PrimitiveComposer PrimitiveComposer { get; private set; }
-        public Gfx Gfx { get; private set; }
-        public RectangleF RetanguloCorpo { get; private set; }
-        public RectangleF RetanguloDesenhavel { get; private set; }
-        public RectangleF Retangulo { get; private set; }
+        internal DanfeNFCePaginaCtrl Ctrl;
 
-        public DanfeNFCePagina(DanfeNFCe danfe)
+        private DanfeContext Contexto => Ctrl.Danfe.Contexto;
+        private DanfeViewModel ViewModel => Contexto.ViewModel;
+        private DanfeConfig Config => Contexto.Config;
+        private PrimitiveComposer PrimitiveComposer => Ctrl.Gfx.PrimitiveComposer;
+        private Gfx Gfx => Ctrl.Gfx;
+
+        public DanfeNFCePagina(DanfeNFCeCtrl ctrl)
         {
-            Danfe = danfe ?? throw new ArgumentNullException(nameof(danfe));
-            PdfPage = new Page(Danfe.PdfDocument);
-            Danfe.PdfDocument.Pages.Add(PdfPage);
+            Ctrl = new DanfeNFCePaginaCtrl(ctrl);
 
-            Retangulo = Danfe.Contexto.Retangulo.Copy();
-            RetanguloDesenhavel = Danfe.Contexto.RetanguloDesenhavel.Copy();
-            PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());
+            AjustarOrigemCoordenadasXY();
+        }
 
-            PrimitiveComposer = new PrimitiveComposer(PdfPage);
-
-            // Difinir posição origem (x,y) para o inicio da página (Fica incorreta em página cima de 300mm)
+        // Difinir posição origem (x,y) para o inicio da página (Fica incorreta em página cima de 300mm)
+        private void AjustarOrigemCoordenadasXY()
+        {
             PrimitiveComposer.BeginLocalState();
-            PrimitiveComposer.Translate(0, PdfPage.Size.Height);
+            PrimitiveComposer.Translate(0, Ctrl.PdfPage.Size.Height);
             PrimitiveComposer.Scale(1, -1);
             PrimitiveComposer.End();
-
-            Gfx = new Gfx(PrimitiveComposer);
         }
 
         public void AjustarTamanhoPagina()
         {
-            float newHeight = (RetanguloDesenhavel.Y + Danfe.Contexto.Config.Margem).ToPoint();
-            var pageContent = PdfPage.ToXObject(PdfPage.File.Document);
+            float newHeight = (Ctrl.RetanguloDesenhavel.Y + Ctrl.Danfe.Contexto.Config.Margem).ToPoint();
+            var pageContent = Ctrl.PdfPage.ToXObject(Ctrl.PdfPage.File.Document);
 
-            var newPdfPage = new Page(PdfPage.File.Document);
-            newPdfPage.Size = new SizeF(PdfPage.Size.Width, newHeight);
-            Danfe.PdfDocument.Pages.Add(newPdfPage);
+            var newPdfPage = new Page(Ctrl.PdfPage.File.Document);
+            newPdfPage.Size = new SizeF(Ctrl.PdfPage.Size.Width, newHeight);
+            Ctrl.Danfe.PdfDocument.Pages.Add(newPdfPage);
 
             var composer = new PrimitiveComposer(newPdfPage);
             composer.ShowXObject(pageContent, new PointF(0, 0));
             composer.Flush();
 
-            Danfe.PdfDocument.Pages.Remove(PdfPage);
-        }
-
-        public void DesenharBlocos(bool isPrimeirapagina = false)
-        {
-            var blocos = isPrimeirapagina ? Danfe._Blocos : Danfe._Blocos.Where(x => x.VisivelSomentePrimeiraPagina == false);
-
-            foreach (var bloco in blocos)
-            {
-                bloco.Width = RetanguloDesenhavel.Width;
-
-                if (bloco.Posicao == PosicaoBloco.Topo)
-                {
-                    bloco.SetPosition(RetanguloDesenhavel.Location);
-                    RetanguloDesenhavel = RetanguloDesenhavel.CutTop(bloco.Height);
-                }
-                else
-                {
-                    bloco.SetPosition(RetanguloDesenhavel.X, RetanguloDesenhavel.Bottom - bloco.Height);
-                    RetanguloDesenhavel = RetanguloDesenhavel.CutBottom(bloco.Height);
-                }
-
-                bloco.Draw(Gfx);
-            }
-
-            RetanguloCorpo = RetanguloDesenhavel;
-            Gfx.Flush();
+            Ctrl.Danfe.PdfDocument.Pages.Remove(Ctrl.PdfPage);
         }
     }
 }

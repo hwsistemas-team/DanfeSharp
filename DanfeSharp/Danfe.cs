@@ -1,216 +1,111 @@
 ﻿using System;
 using System.Collections.Generic;
 using DanfeSharp.Blocos;
-using org.pdfclown.documents;
-using org.pdfclown.documents.contents.fonts;
-using org.pdfclown.files;
 using DanfeSharp.Modelo;
-using System.Drawing;
 
 namespace DanfeSharp
 {
+    internal class DanfeCtrl : DanfeBase<DanfeContext, BlocoNFeBase, DanfeViewModel>
+    {
+        public BlocoCanhoto Canhoto;
+        public BlocoIdentificacaoEmitente IdentificacaoEmitente;
+
+        public DanfeCtrl(DanfeViewModel viewModel, DanfeConfig config)
+            : base(viewModel, config, new System.Drawing.SizeF(Constantes.A4Largura, Constantes.A4Altura))
+        {
+        }
+    }
+
     public class Danfe : IDisposable
     {
-        public File File { get; private set; }
-        internal Document PdfDocument { get; private set; }
+        private bool _foiGerado = false;
+        private bool _disposed = false;
+        private List<DanfePagina> Paginas;
+        private DanfeCtrl _ctrl;
 
-        internal BlocoCanhoto Canhoto { get; private set; }
-        internal BlocoIdentificacaoEmitente IdentificacaoEmitente { get; private set; }
+        private DanfeContext Contexto => _ctrl.Contexto;
+        private DanfeViewModel  ViewModel => _ctrl.Contexto.ViewModel;
+        private DanfeConfig Config => _ctrl.Contexto.Config;
 
-        internal List<BlocoNFeBase> _Blocos;
-        internal DanfeContext Contexto { get; private set; }
-
-        internal List<DanfePagina> Paginas { get; private set; }
-
-        private StandardType1Font _FonteRegular;
-        private StandardType1Font _FonteNegrito;
-        private StandardType1Font _FonteItalico;
-        private StandardType1Font.FamilyEnum _FonteFamilia;
-
-        private Boolean _FoiGerado;
-
-        private org.pdfclown.documents.contents.xObjects.XObject _LogoObject = null;
 
         public Danfe(DanfeViewModel viewModel, DanfeConfig config)
         {
-            _Blocos = new List<BlocoNFeBase>();
-            File = new File();
-            PdfDocument = File.Document;
-
-            // De acordo com o item 7.7, a fonte deve ser Times New Roman ou Courier New.
-            _FonteFamilia = StandardType1Font.FamilyEnum.Times;
-            _FonteRegular = new StandardType1Font(PdfDocument, _FonteFamilia, false, false);
-            _FonteNegrito = new StandardType1Font(PdfDocument, _FonteFamilia, true, false);
-            _FonteItalico = new StandardType1Font(PdfDocument, _FonteFamilia, false, true);
-
-            Contexto = new DanfeContext
-            {
-                Estilo = CriarEstilo(),
-                ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel)),
-                Config = config ?? throw new ArgumentNullException(nameof(config))
-            };
-
-            if (Contexto.Config.Orientacao == Orientacao.Retrato)
-                Contexto.Retangulo = new RectangleF(0, 0, Constantes.A4Largura, Constantes.A4Altura);
-            else
-                Contexto.Retangulo = new RectangleF(0, 0, Constantes.A4Altura, Constantes.A4Largura);
-
-            Contexto.RetanguloDesenhavel = Contexto.Retangulo.InflatedRetangle(Contexto.Config.Margem);
+            _ctrl = new DanfeCtrl(viewModel, config);
 
             Paginas = new List<DanfePagina>();
-            Canhoto = CriarBloco<BlocoCanhoto>();
-            IdentificacaoEmitente = AdicionarBloco<BlocoIdentificacaoEmitente>();
-            AdicionarBloco<BlocoDestinatarioRemetente>();
+            _ctrl.Canhoto = _ctrl.CriarBloco<BlocoCanhoto>();
+            _ctrl.IdentificacaoEmitente = _ctrl.AdicionarBloco<BlocoIdentificacaoEmitente>();
+            _ctrl.AdicionarBloco<BlocoDestinatarioRemetente>();
 
-            if (Contexto.ViewModel.LocalRetirada != null && Contexto.Config.ExibirBlocoLocalRetirada)
-                AdicionarBloco<BlocoLocalRetirada>();
+            if (ViewModel.LocalRetirada != null && Config.ExibirBlocoLocalRetirada)
+                _ctrl.AdicionarBloco<BlocoLocalRetirada>();
 
-            if (Contexto.ViewModel.LocalEntrega != null && Contexto.Config.ExibirBlocoLocalEntrega)
-                AdicionarBloco<BlocoLocalEntrega>();
+            if (ViewModel.LocalEntrega != null && Config.ExibirBlocoLocalEntrega)
+                _ctrl.AdicionarBloco<BlocoLocalEntrega>();
 
-            if (!String.IsNullOrEmpty(Contexto.ViewModel.Fatura?.Numero) && Contexto.Config.ExibirBlocoFatura)
-                AdicionarBloco<BlocoFatura>();
+            if (!String.IsNullOrEmpty(ViewModel.Fatura?.Numero) && Config.ExibirBlocoFatura)
+                _ctrl.AdicionarBloco<BlocoFatura>();
 
-            if (Contexto.ViewModel.Duplicatas.Count > 0)
-                AdicionarBloco<BlocoDuplicatas>();
+            if (ViewModel.Duplicatas.Count > 0)
+                _ctrl.AdicionarBloco<BlocoDuplicatas>();
 
-            AdicionarBloco<BlocoCalculoImposto>(Contexto.Config.Orientacao == Orientacao.Paisagem ? Contexto : Contexto.ComEstilo(CriarEstilo(4.75F)));
-            AdicionarBloco<BlocoTransportador>();
-            AdicionarBloco<BlocoDadosAdicionais>(Contexto.ComEstilo(CriarEstilo(tFonteCampoConteudo: 8)));
+            _ctrl.AdicionarBloco<BlocoCalculoImposto>(Config.Orientacao == Orientacao.Paisagem ? Contexto : Contexto.ComEstilo(_ctrl.CriarEstilo(4.75F)));
+            _ctrl.AdicionarBloco<BlocoTransportador>();
+            _ctrl.AdicionarBloco<BlocoDadosAdicionais>(Contexto.ComEstilo(_ctrl.CriarEstilo(tFonteCampoConteudo: 8)));
 
-            if(Contexto.ViewModel.CalculoIssqn.Mostrar)
-                AdicionarBloco<BlocoCalculoIssqn>();
+            if (ViewModel.CalculoIssqn.Mostrar)
+                _ctrl.AdicionarBloco<BlocoCalculoIssqn>();
 
-            AdicionarMetadata();
+            _ctrl.AdicionarMetadata("DANFE", "DANFE (Documento auxiliar da NFe)");
 
-            _FoiGerado = false;
+            _foiGerado = false;
         }
 
-        public void AdicionarLogoImagem(System.IO.Stream stream)
-        {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
+        public void AdicionarLogoImagem(System.IO.Stream stream) => _ctrl.IdentificacaoEmitente.Logo = _ctrl.AdicionarImagem(stream);
 
-            var img = org.pdfclown.documents.contents.entities.Image.Get(stream);
-            if (img == null) throw new InvalidOperationException("O logotipo não pode ser carregado, certifique-se que a imagem esteja no formato JPEG não progressivo.");
-            _LogoObject = img.ToXObject(PdfDocument);
-        }
+        public void AdicionarLogoPdf(System.IO.Stream stream) => _ctrl.IdentificacaoEmitente.Logo = _ctrl.AdicionarPdf(stream);
 
-        public void AdicionarLogoPdf(System.IO.Stream stream)
-        {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
+        public void AdicionarLogoImagem(String path) => _ctrl.IdentificacaoEmitente.Logo = _ctrl.AdicionarImagem(path);
 
-            using (var pdfFile = new org.pdfclown.files.File(new org.pdfclown.bytes.Stream(stream)))
-            {
-                _LogoObject = pdfFile.Document.Pages[0].ToXObject(PdfDocument);
-            }
-        }
-
-        public void AdicionarLogoImagem(String path)
-        {
-            if (String.IsNullOrWhiteSpace(path)) throw new ArgumentException(nameof(path));
-
-            using(var fs = new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-            {
-                AdicionarLogoImagem(fs);
-            }
-        }
-
-        public void AdicionarLogoPdf(String path)
-        {
-            if (String.IsNullOrWhiteSpace(path)) throw new ArgumentException(nameof(path));
-
-            using (var fs = new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-            {
-                AdicionarLogoPdf(fs);
-            }
-        }
-
-        private void AdicionarMetadata()
-        {
-            var info = PdfDocument.Information;
-            info[new org.pdfclown.objects.PdfName("ChaveAcesso")] = Contexto.ViewModel.ChaveAcesso;
-            info[new org.pdfclown.objects.PdfName("TipoDocumento")] = "DANFE";
-            info.CreationDate = DateTime.Now;
-            info.Creator = String.Format("{0} {1} - {2}", "DanfeSharp", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, "https://github.com/SilverCard/DanfeSharp");
-            info.Title = "DANFE (Documento auxiliar da NFe)";
-        }
-
-        private Estilo CriarEstilo(float tFonteCampoCabecalho = 6, float tFonteCampoConteudo = 10)
-        {
-            return new Estilo(_FonteRegular, _FonteNegrito, _FonteItalico, tFonteCampoCabecalho, tFonteCampoConteudo);
-        }
+        public void AdicionarLogoPdf(String path) => _ctrl.IdentificacaoEmitente.Logo = _ctrl.AdicionarPdf(path);
 
         public void Gerar()
         {
-            if (_FoiGerado) throw new InvalidOperationException("O Danfe já foi gerado.");
+            if (_foiGerado) throw new InvalidOperationException("O Danfe já foi gerado.");
 
-            IdentificacaoEmitente.Logo = _LogoObject;
             var tabela = new TabelaProdutosServicos(Contexto);
 
             while (true)
             {
                 DanfePagina p = CriarPagina();
 
-                tabela.SetPosition(p.RetanguloCorpo.Location);
-                tabela.SetSize(p.RetanguloCorpo.Size);
-                tabela.Draw(p.Gfx);
+                tabela.SetPosition(p.Ctrl.RetanguloCorpo.Location);
+                tabela.SetSize(p.Ctrl.RetanguloCorpo.Size);
+                tabela.Draw(p.Ctrl.Gfx);
 
-                p.Gfx.Stroke();
-                p.Gfx.Flush();
+                p.Ctrl.Gfx.Stroke();
+                p.Ctrl.Gfx.Flush();
 
                 if (tabela.CompletamenteDesenhada) break;
 
             }
 
             PreencherNumeroFolhas();
-            _FoiGerado = true;
+            _foiGerado = true;
 
         }
 
         private DanfePagina CriarPagina()
         {
-            DanfePagina p = new DanfePagina(this);
+            DanfePagina p = new DanfePagina(_ctrl);
             Paginas.Add(p);
             p.DesenharBlocos(Paginas.Count == 1);
-            p.DesenharCreditos();
+            p.Ctrl.DesenharCreditos();
 
-            // Ambiente de homologação
-            // 7. O DANFE emitido para representar NF-e cujo uso foi autorizado em ambiente de
-            // homologação sempre deverá conter a frase “SEM VALOR FISCAL” no quadro “Informações
-            // Complementares” ou em marca d’água destacada.
-            if (Contexto.ViewModel.TipoAmbiente == 2 || Contexto.ViewModel.Cancelada)
+            if (ViewModel.TipoAmbiente == 2 || ViewModel.Cancelada)
                 p.DesenharAvisoHomologacao();
 
             return p;
-        }
-
-        internal T CriarBloco<T>() where T : BlocoNFeBase
-        {
-            return (T)Activator.CreateInstance(typeof(T), Contexto);
-        }
-
-        internal T CriarBloco<T>(BlocoNFeContexto contexto) where T : BlocoNFeBase
-        {
-            return (T)Activator.CreateInstance(typeof(T), contexto);
-        }
-
-        internal T AdicionarBloco<T>() where T: BlocoNFeBase
-        {
-            var bloco = CriarBloco<T>();
-            _Blocos.Add(bloco);
-            return bloco;
-        }
-
-        internal T AdicionarBloco<T>(BlocoNFeContexto contexto) where T : BlocoNFeBase
-        {
-            var bloco = CriarBloco<T>(contexto);
-            _Blocos.Add(bloco);
-            return bloco;
-        }
-
-        internal void AdicionarBloco(BlocoNFeBase bloco)
-        {
-            _Blocos.Add(bloco);
         }
 
         internal void PreencherNumeroFolhas()
@@ -222,53 +117,25 @@ namespace DanfeSharp
             }
         }
 
-        public void Salvar(String path)
-        {
-            if (String.IsNullOrWhiteSpace(path)) throw new ArgumentException(nameof(path));
+        public void Salvar(String path) => _ctrl.Salvar(path);
 
-            File.Save(path, SerializationModeEnum.Incremental);
-        }
+        public void Salvar(System.IO.Stream stream) => _ctrl.Salvar(stream);
 
-        public void Salvar(System.IO.Stream stream)
-        {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            File.Save(new org.pdfclown.bytes.Stream(stream), SerializationModeEnum.Incremental);
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    File.Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
-            }
-        }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~Danfe() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        public void Dispose(bool isDisposing)
+        {
+            if (_disposed)
+                return;
+
+            if (isDisposing)
+                _ctrl.Dispose();
+
+            _disposed = true;
+        }
     }
 }

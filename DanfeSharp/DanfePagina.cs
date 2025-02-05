@@ -1,79 +1,67 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using DanfeSharp.Blocos;
 using DanfeSharp.Graphics;
-using org.pdfclown.documents;
+using DanfeSharp.Modelo;
 using org.pdfclown.documents.contents.composition;
 
 namespace DanfeSharp
 {
+    internal class DanfePaginaCtrl : DanfePaginaBase<DanfeCtrl, DanfeContext, BlocoNFeBase, DanfeViewModel>
+    {
+        public DanfePaginaCtrl(DanfeCtrl ctrl) : base(ctrl) { }
+    }
+
     internal class DanfePagina
     {
-        public Danfe Danfe { get; private set; }
-        public Page PdfPage { get; private set; }
-        public PrimitiveComposer PrimitiveComposer { get; private set; }
-        public Gfx Gfx { get; private set; }
-        public RectangleF RetanguloNumeroFolhas { get;  set; }
-        public RectangleF RetanguloCorpo { get; private set; }
-        public RectangleF RetanguloDesenhavel { get; private set; }
-        public RectangleF RetanguloCreditos { get; private set; }
-        public RectangleF Retangulo { get; private set; }
+        internal DanfePaginaCtrl Ctrl;
 
-        public DanfePagina(Danfe danfe)
+        private DanfeContext Contexto => Ctrl.Danfe.Contexto;
+        private DanfeViewModel ViewModel => Contexto.ViewModel;
+        private DanfeConfig Config => Contexto.Config;
+        private PrimitiveComposer PrimitiveComposer => Ctrl.Gfx.PrimitiveComposer;
+        private Gfx Gfx => Ctrl.Gfx;
+
+        public DanfePagina(DanfeCtrl ctrl)
         {
-            Danfe = danfe ?? throw new ArgumentNullException(nameof(danfe));
-            PdfPage = new Page(Danfe.PdfDocument);
-            Danfe.PdfDocument.Pages.Add(PdfPage);
-
-            PrimitiveComposer = new PrimitiveComposer(PdfPage);
-            Gfx = new Gfx(PrimitiveComposer);
-
-            Retangulo = Danfe.Contexto.Retangulo.Copy();
-            RetanguloDesenhavel = Danfe.Contexto.RetanguloDesenhavel.Copy();
-            RetanguloCreditos = new RectangleF(RetanguloDesenhavel.X, RetanguloDesenhavel.Bottom + Danfe.Contexto.Estilo.PaddingSuperior, RetanguloDesenhavel.Width, Retangulo.Height - RetanguloDesenhavel.Height - Danfe.Contexto.Estilo.PaddingSuperior);
-            PdfPage.Size = new SizeF(Retangulo.Width.ToPoint(), Retangulo.Height.ToPoint());
+            Ctrl = new DanfePaginaCtrl(ctrl);
         }
 
-        public void DesenharCreditos()
-        {
-            Gfx.DrawString("Impresso com DanfeSharp", RetanguloCreditos, Danfe.Contexto.Estilo.CriarFonteItalico(6), AlinhamentoHorizontal.Direita);
-        }
 
         private void DesenharCanhoto()
         {
-            if (Danfe.Contexto.Config.QuantidadeCanhotos == 0) return;
+            if (Config.QuantidadeCanhotos == 0) return;
 
-            var canhoto = Danfe.Canhoto;
-            canhoto.SetPosition(RetanguloDesenhavel.Location);
+            var canhoto = Ctrl.Danfe.Canhoto;
 
-            if (Danfe.Contexto.Config.Orientacao == Orientacao.Retrato)
+            canhoto.SetPosition(Ctrl.RetanguloDesenhavel.Location);
+
+            if (Config.Orientacao == Orientacao.Retrato)
             {
-                canhoto.Width = RetanguloDesenhavel.Width;
+                canhoto.Width = Ctrl.RetanguloDesenhavel.Width;
 
-                for (int i = 0; i < Danfe.Contexto.Config.QuantidadeCanhotos; i++)
+                for (int i = 0; i < Config.QuantidadeCanhotos; i++)
                 {
                     canhoto.Draw(Gfx);
                     canhoto.Y += canhoto.Height;
                 }
 
-                RetanguloDesenhavel = RetanguloDesenhavel.CutTop(canhoto.Height * Danfe.Contexto.Config.QuantidadeCanhotos);
+                Ctrl.RetanguloDesenhavel = Ctrl.RetanguloDesenhavel.CutTop(canhoto.Height * Config.QuantidadeCanhotos);
             }
             else
             {
-                canhoto.Width = RetanguloDesenhavel.Height;
-                Gfx.PrimitiveComposer.BeginLocalState();
-                Gfx.PrimitiveComposer.Rotate(90, new PointF(0, canhoto.Width + canhoto.X + canhoto.Y).ToPointMeasure());
+                canhoto.Width = Ctrl.RetanguloDesenhavel.Height;
+                PrimitiveComposer.BeginLocalState();
+                PrimitiveComposer.Rotate(90, new PointF(0, canhoto.Width + canhoto.X + canhoto.Y).ToPointMeasure());
 
-                for (int i = 0; i < Danfe.Contexto.Config.QuantidadeCanhotos; i++)
+                for (int i = 0; i < Config.QuantidadeCanhotos; i++)
                 {
                     canhoto.Draw(Gfx);
                     canhoto.Y += canhoto.Height;
                 }
 
-                Gfx.PrimitiveComposer.End();
-                RetanguloDesenhavel = RetanguloDesenhavel.CutLeft(canhoto.Height * Danfe.Contexto.Config.QuantidadeCanhotos);
-
+                PrimitiveComposer.End();
+                Ctrl.RetanguloDesenhavel = Ctrl.RetanguloDesenhavel.CutLeft(canhoto.Height * Config.QuantidadeCanhotos);
             }
         }
 
@@ -83,67 +71,46 @@ namespace DanfeSharp
             if (total <= 0) throw new ArgumentOutOfRangeException(nameof(n));
             if (n > total) throw new ArgumentOutOfRangeException("O número da página atual deve ser menor que o total.");
 
-            Gfx.DrawString($"Folha {n}/{total}", RetanguloNumeroFolhas, Danfe.Contexto.Estilo.FonteNumeroFolhas, AlinhamentoHorizontal.Centro);
+            Gfx.DrawString($"Folha {n}/{total}", Ctrl.Danfe.IdentificacaoEmitente.RetanguloNumeroFolhas, Contexto.Estilo.FonteNumeroFolhas, AlinhamentoHorizontal.Centro);
             Gfx.Flush();
         }
 
         public void DesenharAvisoHomologacao()
         {
-            var ts = new TextStack(Danfe.Contexto, RetanguloCorpo)
+            // Ambiente de homologação
+            // 7. O DANFE emitido para representar NF-e cujo uso foi autorizado em ambiente de
+            // homologação sempre deverá conter a frase “SEM VALOR FISCAL” no quadro “Informações
+            // Complementares” ou em marca d’água destacada.
+
+            var ts = new TextStack(Contexto, Ctrl.RetanguloCorpo)
             {
-                AlinhamentoVertical = AlinhamentoVertical.Centro, AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
+                AlinhamentoVertical = AlinhamentoVertical.Centro,
+                AlinhamentoHorizontal = AlinhamentoHorizontal.Centro,
                 LineHeightScale = 0.9F
             };
 
-            var f1 = Danfe.Contexto.Estilo.CriarFonteRegular(48);
-            var f2 = Danfe.Contexto.Estilo.CriarFonteRegular(30);
+            var f1 = Contexto.Estilo.CriarFonteRegular(48);
+            var f2 = Contexto.Estilo.CriarFonteRegular(30);
 
             ts.AddLine("SEM VALOR FISCAL", f1);
 
-            if (Danfe.Contexto.ViewModel.TipoAmbiente == 2)
+            if (ViewModel.TipoAmbiente == 2)
                 ts.AddLine("AMBIENTE DE HOMOLOGAÇÃO", f2);
 
-            if (Danfe.Contexto.ViewModel.Cancelada)
+            if (ViewModel.Cancelada)
                 ts.AddLine("CANCELADA", f2);
 
-            Gfx.PrimitiveComposer.BeginLocalState();
-            Gfx.PrimitiveComposer.SetFillColor(new org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor(0.35, 0.35, 0.35));
+            PrimitiveComposer.BeginLocalState();
+            PrimitiveComposer.SetFillColor(new org.pdfclown.documents.contents.colorSpaces.DeviceRGBColor(0.35, 0.35, 0.35));
             ts.Draw(Gfx);
-            Gfx.PrimitiveComposer.End();
+            PrimitiveComposer.End();
         }
 
         public void DesenharBlocos(bool isPrimeirapagina = false)
         {
-            if (isPrimeirapagina && Danfe.Contexto.Config.QuantidadeCanhotos > 0) DesenharCanhoto();
+            if (isPrimeirapagina && Config.QuantidadeCanhotos > 0) DesenharCanhoto();
 
-            var blocos = isPrimeirapagina ? Danfe._Blocos : Danfe._Blocos.Where(x => x.VisivelSomentePrimeiraPagina == false);
-
-            foreach (var bloco in blocos)
-            {
-                bloco.Width = RetanguloDesenhavel.Width;
-
-                if (bloco.Posicao == PosicaoBloco.Topo)
-                {
-                    bloco.SetPosition(RetanguloDesenhavel.Location);
-                    RetanguloDesenhavel = RetanguloDesenhavel.CutTop(bloco.Height);
-                }
-                else
-                {
-                    bloco.SetPosition(RetanguloDesenhavel.X, RetanguloDesenhavel.Bottom - bloco.Height);
-                    RetanguloDesenhavel = RetanguloDesenhavel.CutBottom(bloco.Height);
-                }
-
-                bloco.Draw(Gfx);
-
-                if (bloco is BlocoIdentificacaoEmitente)
-                {
-                    var rf = (bloco as BlocoIdentificacaoEmitente).RetanguloNumeroFolhas;
-                    RetanguloNumeroFolhas = rf;
-                }
-            }
-
-            RetanguloCorpo = RetanguloDesenhavel;
-            Gfx.Flush();
+            Ctrl.DesenharBlocos(isPrimeirapagina);
         }
     }
 }
