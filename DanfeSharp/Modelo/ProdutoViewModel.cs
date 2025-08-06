@@ -60,6 +60,32 @@ namespace DanfeSharp.Modelo
         public double ValorUnitario { get; set; }
 
         /// <summary>
+        /// <para>Valor Desconto</para>
+        /// <para>Tag vDesc</para>
+        /// </summary>
+        public double ValorDesconto { get; set; }
+
+        /// <summary>
+        /// <para>Valor Frete</para>
+        /// <para>Tag vFrete</para>
+        /// </summary>
+        public double ValorFrete { get; set; }
+
+        /// <summary>
+        /// <para>Valor Seguro</para>
+        /// <para>Tag vSeg</para>
+        /// </summary>
+        public double ValorSeguro { get; set; }
+
+        /// <summary>
+        /// <para>Valor outras despesas</para>
+        /// <para>Tag vOutro</para>
+        /// </summary>
+        public double ValorOutrasDespesas { get; set; }
+
+        public double ValorAcrescimo => ValorFrete + ValorSeguro + ValorOutrasDespesas;
+
+        /// <summary>
         /// <para>Valor Total Bruto dos Produtos ou Serviços</para>
         /// <para>Tag vProd</para>
         /// </summary>
@@ -117,7 +143,7 @@ namespace DanfeSharp.Modelo
                 {
                     descriCaoCompleta += "\r\n" + InformacoesAdicionais;
                 }
-                
+
                 return descriCaoCompleta;
             }
         }

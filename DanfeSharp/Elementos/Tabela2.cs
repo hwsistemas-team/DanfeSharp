@@ -15,6 +15,7 @@ namespace DanfeSharp
         public float PaddingInferior { get; private set; }
         public float PaddingHorizontal { get; private set; }
         public bool BordasCaixa { get; set;} = false;
+        public bool LinhaSeparadora { get; set; } = true;
 
         public int LinhaAtual { get; private set; }
         public float TamanhoFonteCabecalho { get; private set; }
@@ -93,11 +94,21 @@ namespace DanfeSharp
             Height = CalcularAlturarCabacalho() + CalcularAlturarLinhas() + fixHeight;
         }
 
+        private bool IgnorarColunas(List<TabelaColuna> cols)
+        {
+            // Não desenha linha se todas as colunas não tiverem label
+            // Caso uso: É preciso adicionar uma linha que não possue cabeçalho
+            return cols.All(x => String.IsNullOrWhiteSpace(x.ToString()));
+        }
+
         private float CalcularAlturarCabacalho()
         {
             float cabecalhoAltura = 0;
-            foreach(var cols in Colunas)
+            foreach (var cols in Colunas)
             {
+                if (IgnorarColunas(cols))
+                    continue;
+
                 var ml = cols.Max(c => c.Cabecalho.Length);
                 cabecalhoAltura += ml * FonteCabecalho.AlturaLinha + 1F;
             }
@@ -218,6 +229,9 @@ namespace DanfeSharp
 
             foreach(var cols in Colunas)
             {
+                if (IgnorarColunas(cols))
+                    continue;
+
                 var ml = cols.Max(c => c.Cabecalho.Length);
                 float ac = ml * FonteCabecalho.AlturaLinha + 1F;
                 float x = X;
@@ -269,7 +283,7 @@ namespace DanfeSharp
 
                 if (r)
                 {
-                    if (LinhaAtual > 0 && !BordasCaixa)
+                    if (LinhaAtual > 0 && !BordasCaixa && LinhaSeparadora)
                     {
                         gfx.PrimitiveComposer.BeginLocalState();
                         gfx.PrimitiveComposer.SetStrokeColor(new DeviceRGBColor(0.5, 0.5, 0.5));

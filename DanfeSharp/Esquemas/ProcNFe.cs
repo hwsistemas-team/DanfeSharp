@@ -222,10 +222,10 @@ namespace DanfeSharp.Esquemas.NFe
         public string uTrib { get; set; }
         public string qTrib { get; set; }
         public string vUnTrib { get; set; }
-        public string vFrete { get; set; }
-        public string vSeg { get; set; }
-        public string vDesc { get; set; }
-        public string vOutro { get; set; }
+        public double vFrete { get; set; }
+        public double vSeg { get; set; }
+        public double vDesc { get; set; }
+        public double vOutro { get; set; }
         public string xPed { get; set; }
         public string nItemPed { get; set; }
         public string nFCI { get; set; }

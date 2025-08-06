@@ -17,7 +17,7 @@ namespace DanfeSharp.NFCe
             MainVerticalStack.Add(new LinhaSolida(contexto, 1));
             MainVerticalStack.Add(new TextoSeparado(contexto, "Qtde. total de itens", qtdTotal.ToString(), 80, 20, fr));
             MainVerticalStack.Add(ls);
-            MainVerticalStack.Add(new TextoSeparado(contexto, "Valor total R$", valorTotal.Formatar(), 60, 40, fn));
+            MainVerticalStack.Add(new TextoSeparado(contexto, "Valor a pagar",  "R$ " + ViewModel.CalculoImposto.ValorTotalNota.Formatar(), 60, 40, fn));
         }
 
         public override PosicaoBloco Posicao => PosicaoBloco.Topo;

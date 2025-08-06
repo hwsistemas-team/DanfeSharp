@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>HWSistemas.Danfe</PackageId>
-    <Version>1.0.13</Version>
+    <Version>1.0.18</Version>
     <Authors>hwsistemas</Authors>
     <Company>hwsitemas</Company>
     <!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->

@@ -32,6 +32,7 @@ namespace DanfeSharp
 
         public const String FormatoMoeda = "#,0.00##";
         public const String FormatoNumero = "#,0.####";
+        public const String FormatoPercentual = "#,0.00";
 
         private static String InternalRegexReplace(String input, String pattern, String replacement)
         {

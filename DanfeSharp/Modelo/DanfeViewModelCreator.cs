@@ -248,6 +248,10 @@ namespace DanfeSharp.Modelo
                 produto.Unidade = det.prod.uCom;
                 produto.Quantidade = det.prod.qCom;
                 produto.ValorUnitario = det.prod.vUnCom;
+                produto.ValorDesconto = det.prod.vDesc;
+                produto.ValorFrete = det.prod.vFrete;
+                produto.ValorSeguro = det.prod.vSeg;
+                produto.ValorOutrasDespesas = det.prod.vOutro;
                 produto.ValorTotal = det.prod.vProd;
                 produto.InformacoesAdicionais = det.infAdProd;
 
